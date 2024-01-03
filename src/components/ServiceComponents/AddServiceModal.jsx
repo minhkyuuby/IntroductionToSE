@@ -94,10 +94,8 @@ export default function AddServiceModal({ open, handleClose,handleAddService }) 
             inputProps={{ 'aria-label': 'Without label' }}
             margin="normal"
           >
-            <MenuItem value="">Chọn đơn vị</MenuItem>
-            <MenuItem value="Đơn vị 1">Đơn vị 1</MenuItem>
-            <MenuItem value="Đơn vị 2">Đơn vị 2</MenuItem>
-            <MenuItem value="Đơn vị 3">Đơn vị 3</MenuItem>
+            <MenuItem value=""> Không có đơn vị</MenuItem>
+            <MenuItem value="Đơn vị 1">m²</MenuItem>
             {/* Thêm các đơn vị khác nếu cần */}
           </Select>
         </Box>
