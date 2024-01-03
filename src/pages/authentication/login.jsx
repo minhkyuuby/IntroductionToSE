@@ -7,14 +7,14 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const history = useNavigate();
+  const nagivate = useNavigate();
 
   const handleLogin = () => {
     // You can implement your authentication logic here
     // For simplicity, I'm checking if both username and password are non-empty
     if (username && password) {
       // If authentication is successful, navigate to another page
-      history('/dashboard');
+      nagivate('/dashboard');
     } else {
       setError('Invalid username or password');
     }
@@ -23,7 +23,7 @@ const Login = () => {
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>
       <h2>Login</h2>
-      <form>
+      <form onSubmit={handleLogin}>
         <TextField
           label="Username"
           variant="outlined"
