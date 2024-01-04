@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from '@mui/material';
 
 const columns = [
-  { id: 'vehicleName', label: 'Loại xe' },
-  { id: 'vehiclePrice', label: 'Giá gửi xe ' },
+  { id: 'vehicleRoom', label: 'Phòng sở hữu xe' },
+  { id: 'vehicleName', label: 'Tên xe' },
+  { id: 'vehicleId', label: 'Loại xe' },
 ];
 
 export default function VechicleTable({ rows }) {

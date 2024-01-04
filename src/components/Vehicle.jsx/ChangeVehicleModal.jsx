@@ -14,17 +14,20 @@ const style = {
 };
 
 export default function ChangeVehicleModal({ open, handleClose, handleChangeVehicle }) {
+  const [vehicleRoom, setVehicleRoom] = useState('');
+  const [vehicleId, setVehicleId] = useState('');
   const [vehicleName, setVehicleName] = useState('');
-  const [vehiclePrice, setVehiclePrice] = useState('');
+
 
   const resetFields = () => {
+    setVehicleRoom('');
     setVehicleName('');
-    setVehiclePrice('');
+    setVehicleId('');
     handleClose();
   };
 
   const handleChangeVehicleModal = () => {
-    const newVehicle = { vehicleName,vehiclePrice };
+    const newVehicle = { vehicleRoom,vehicleName,vehicleId };
     handleChangeVehicle(newVehicle);
     resetFields();
     handleClose();
@@ -38,15 +41,29 @@ export default function ChangeVehicleModal({ open, handleClose, handleChangeVehi
     >
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
-          Thêm dịch vụ
+          Thêm xe
         </Typography>
         <Box>
+        <TextField
+            label="Tên phòng sở hưu xe "
+            value={vehicleRoom}
+            onChange={(e) => setVehicleRoom(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Tên xe "
+            value={vehicleName}
+            onChange={(e) => setVehicleName(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
           <Typography variant="subtitle1" gutterBottom>
             Loại xe 
           </Typography>
           <Select
             value={vehicleName}
-            onChange={(e) => setVehicleName(e.target.value)}
+            onChange={(e) => setVehicleId(e.target.value)}
             fullWidth
             displayEmpty
             inputProps={{ 'aria-label': 'Without label' }}
@@ -57,16 +74,9 @@ export default function ChangeVehicleModal({ open, handleClose, handleChangeVehi
             <MenuItem value="Xe máy">Xe máy  </MenuItem>
             <MenuItem value="Xe ô tô">Xe ô tô </MenuItem>
           </Select>
-          <TextField
-            label="Giá gửi xe"
-            value={vehiclePrice}
-            onChange={(e) => setVehiclePrice(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
         </Box>
         <br />
-        <Button variant="contained" onClick={() => handleChangeVehicleModal({ vehicleName,vehiclePrice})}>
+        <Button variant="contained" onClick={() => handleChangeVehicleModal({ vehicleRoom,vehicleName,vehicleId})}>
           Thêm thông tin
         </Button>
       </Box>
