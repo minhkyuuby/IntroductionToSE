@@ -6,6 +6,7 @@ import Dashboard from './pages/dashboard.jsx';
 import Residents from './pages/Residents.jsx';
 import Bills from './pages/Bills.jsx';
 import Apartments from './pages/Apartments.jsx';
+import Vehicles from './pages/Vehicles.jsx';
 
 function App() {
   let element = useRoutes([
@@ -32,6 +33,10 @@ function App() {
     {
       path: "/bill",
       element: <Bills />,
+    },
+    {
+      path: "/vehicle",
+      element: <Vehicles />,
     }
   ]);
 

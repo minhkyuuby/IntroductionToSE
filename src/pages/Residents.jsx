@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Container, Button } from '@mui/material';
 import AddResidentModal from '../components/ResidentComponents/AddResidentModal';
 import ResidentTable from '../components/ResidentComponents/ResidentTable';
-
 const initialRows = [
   // Initial data for the table
 ];
