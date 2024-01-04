@@ -20,8 +20,8 @@ export default function ChangeVehicleModal({ open, handleClose, handleChangeVehi
 
 
   const resetFields = () => {
-    setVehicleName('');
     setVehicleRoom('');
+    setVehicleName('');
     setVehicleId('');
     handleClose();
   };
