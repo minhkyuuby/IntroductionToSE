@@ -19,39 +19,18 @@ export default function Vehicles() {
     setOpenModal(false);
   };
 
+  
   const handleChangeVehicle = (newVehicle) => {
-    const { vehicleName, vehiclePrice } = newVehicle;
   
-    // Kiểm tra xem loại xe đã tồn tại trong rows chưa
-    const existingVehicle = rows.find((row) => row.vehicleName === vehicleName);
-  
-    if (existingVehicle) {
-      // Nếu loại xe đã tồn tại và giá gửi xe mới khác giá trị hiện tại
-      if (existingVehicle.vehiclePrice !== vehiclePrice) {
-        // Cập nhật giá gửi xe cho loại xe đã tồn tại
-        const updatedRows = rows.map((row) =>
-          row.vehicleName === vehicleName ? { ...row, vehiclePrice } : row
-        );
-        setRows(updatedRows);
-      }
-    } else {
-      // Nếu loại xe chưa tồn tại, thêm loại xe mới vào rows
-      setRows([...rows, newVehicle]);
-    }
-  
-    handleCloseModal(); // Đóng modal sau khi xử lý thay đổi
+    setRows([...rows, newVehicle]);
   };
-  // const handleChangeVehicle = (newVehicle) => {
-  
-  //   setRows([...rows, newVehicle]);
-  // };
   return (
     <Container>
       <div >
-        Bảng phí gửi xe 
+        Bảng xe 
       </div>
       <div>
-        <Button onClick={handleOpenModal} variant="outlined" size="small">Cập nhật phí gửi xe </Button>
+        <Button onClick={handleOpenModal} variant="outlined" size="small">Thêm xe mới </Button>
       </div>
       <ChangeVehicleModal open={openModal} handleClose={handleCloseModal} handleChangeVehicle={handleChangeVehicle}/>
       <hr />
