@@ -62,7 +62,12 @@ export default function Services() {
 
   // Function to add a new service row to the table
   const handleAddService = (newService) => {
-    setRows([...rows, newService]);
+    serviceApi.createNewSevice(newService).then(()=> {
+      
+    }).catch((e) => {
+      console.log("Thông báo cái gì đó ở đây là không tạo được service!");
+      console.log(e)
+    })
   };
 
   return (
