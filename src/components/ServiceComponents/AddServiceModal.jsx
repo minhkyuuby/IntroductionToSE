@@ -13,24 +13,39 @@ const style = {
   p: 4,
 };
 
-export default function AddServiceModal({ open, handleClose,handleAddService }) {
+export default function AddServiceModal({ open, handleClose, handleAddService }) {
   const [serviceName, setServiceName] = useState('');
   const [status, setStatus] = useState(0);
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
+  const [price, setPrice] = useState(0);
   const [unit, setUnit] = useState('');
 
   const resetFields = () => {
     setServiceName('');
-    setStatus('');
+    setStatus(0);
     setDescription('');
-    setPrice('');
+    setPrice(0);
     setUnit('');
     handleClose();
   };
 
+  // handle inputs
+  
+  const handleChangeNumberField = (event) => {
+    let value = event.target.value;
+
+    // Check if the input is a positive number
+    value = value.replace(/[^0-9]/g, '').replace(/^0+/, '');
+    setPrice(Number(value));
+    // If not a positive number, you can handle it in different ways,
+    // such as showing an error message or preventing further input.
+  };
+  // end handle inputs
+
   const handleAddServiceModal = () => {
-    const newService = { serviceName, status, description, price, unit };
+    const info = { status, description, price: price , unit }
+    const newService = {name: serviceName, info };
+    
     handleAddService(newService);
     resetFields();
     handleClose();
@@ -78,7 +93,7 @@ export default function AddServiceModal({ open, handleClose,handleAddService }) 
           <TextField
             label="Giá (nghìn đồng)"
             value={price}
-            onChange={(e) => setPrice(e.target.value)}
+            onChange={handleChangeNumberField}
             fullWidth
             margin="normal"
           />
