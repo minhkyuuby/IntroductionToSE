@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Button ,Box,Typography} from '@mui/material';
 import ServiceTable from '../components/ServiceComponents/ServiceTable';
 import AddServiceModal from '../components/ServiceComponents/AddServiceModal';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
+import serviceApi from '../api/serviceApi.js';
 const initialRows = [
   // Initial data for the table
 ];
@@ -19,9 +20,37 @@ const theme = createTheme({
     },
   },
 });
+
 export default function Services() {
   const [openModal, setOpenModal] = useState(false);
   const [rows, setRows] = useState(initialRows);
+
+  useEffect(() => {
+    serviceApi.getAllServices().then(response => {
+
+      const services = response.map(item => {
+        // Parse chuỗi JSON từ trường 'info'
+        const infoObject = JSON.parse(item.info);
+      
+        return {
+          id: item.id,
+          name: item.name,
+          status: infoObject.status === 0? "hoạt động" : "không hoạt động",
+          description: infoObject.description,
+          price: infoObject.price,
+          unit: infoObject.unit,
+          // Thêm các thuộc tính khác nếu có
+        };
+      });
+
+      setRows(services);
+
+
+    }).catch(() => {
+        setRows(initialRows)
+    })
+  }, []);
+
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -33,7 +62,12 @@ export default function Services() {
 
   // Function to add a new service row to the table
   const handleAddService = (newService) => {
-    setRows([...rows, newService]);
+    serviceApi.createNewSevice(newService).then(()=> {
+      
+    }).catch((e) => {
+      console.log("Thông báo cái gì đó ở đây là không tạo được service!");
+      console.log(e)
+    })
   };
 
   return (

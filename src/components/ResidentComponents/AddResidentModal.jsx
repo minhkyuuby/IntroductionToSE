@@ -4,6 +4,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -15,18 +16,18 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#7FC7D9',
-      contrastText: '#ffffff',
-    },
-    secondary: {
-      main: '#f50057',
-    },
-  },
-});
+// const theme = createTheme({
+//   palette: {
+//     mode: 'light',
+//     primary: {
+//       main: '#7FC7D9',
+//       contrastText: '#ffffff',
+//     },
+//     secondary: {
+//       main: '#f50057',
+//     },
+//   },
+// });
 
 
 export default function AddResidentModal({ open, handleClose, handleAddResident }) {

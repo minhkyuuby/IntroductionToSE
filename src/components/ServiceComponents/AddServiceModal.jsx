@@ -13,24 +13,39 @@ const style = {
   p: 4,
 };
 
-export default function AddServiceModal({ open, handleClose,handleAddService }) {
+export default function AddServiceModal({ open, handleClose, handleAddService }) {
   const [serviceName, setServiceName] = useState('');
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(0);
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
+  const [price, setPrice] = useState(0);
   const [unit, setUnit] = useState('');
 
   const resetFields = () => {
     setServiceName('');
-    setStatus('');
+    setStatus(0);
     setDescription('');
-    setPrice('');
+    setPrice(0);
     setUnit('');
     handleClose();
   };
 
+  // handle inputs
+  
+  const handleChangeNumberField = (event) => {
+    let value = event.target.value;
+
+    // Check if the input is a positive number
+    value = value.replace(/[^0-9]/g, '').replace(/^0+/, '');
+    setPrice(Number(value));
+    // If not a positive number, you can handle it in different ways,
+    // such as showing an error message or preventing further input.
+  };
+  // end handle inputs
+
   const handleAddServiceModal = () => {
-    const newService = { serviceName, status, description, price, unit };
+    const info = { status, description, price: price , unit }
+    const newService = {name: serviceName, info };
+    
     handleAddService(newService);
     resetFields();
     handleClose();
@@ -65,9 +80,8 @@ export default function AddServiceModal({ open, handleClose,handleAddService }) 
             inputProps={{ 'aria-label': 'Without label' }}
             margin="normal"
           >
-            <MenuItem value="">Chọn trạng thái</MenuItem>
-            <MenuItem value="Đang hoạt động">Đang hoạt động</MenuItem>
-            <MenuItem value="Ngừng hoạt động">Ngừng hoạt động</MenuItem>
+            <MenuItem value={0}>Đang hoạt động</MenuItem>
+            <MenuItem value={1}>Ngừng hoạt động</MenuItem>
           </Select>
           <TextField
             label="Mô tả"
@@ -79,7 +93,7 @@ export default function AddServiceModal({ open, handleClose,handleAddService }) 
           <TextField
             label="Giá (nghìn đồng)"
             value={price}
-            onChange={(e) => setPrice(e.target.value)}
+            onChange={handleChangeNumberField}
             fullWidth
             margin="normal"
           />
@@ -95,7 +109,12 @@ export default function AddServiceModal({ open, handleClose,handleAddService }) 
             margin="normal"
           >
             <MenuItem value=""> Không có đơn vị</MenuItem>
-            <MenuItem value="Đơn vị 1">m²</MenuItem>
+            <MenuItem value="square-meter">square-meter (m²)</MenuItem>
+            <MenuItem value="cubic-meter">cubic-meter (m³)</MenuItem>
+            <MenuItem value="number">number - số</MenuItem>
+            <MenuItem value="bike">bike (xe đạp)</MenuItem>
+            <MenuItem value="moto">moto (xe máy)</MenuItem>
+            <MenuItem value="car">car (ô tô)</MenuItem>
             {/* Thêm các đơn vị khác nếu cần */}
           </Select>
         </Box>
