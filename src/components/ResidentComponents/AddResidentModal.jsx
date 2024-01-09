@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Modal, Box, Typography, Button, TextField } from '@mui/material';
-
+import { Modal, Box, Typography, Button, TextField, createTheme } from '@mui/material';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 const style = {
   position: 'absolute',
   top: '50%',
@@ -12,23 +15,37 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#7FC7D9',
+      contrastText: '#ffffff',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+  },
+});
 
-export default function AddResidentModal({ open, handleClose,handleAddResident }) {
+
+export default function AddResidentModal({ open, handleClose, handleAddResident }) {
   const [residentId, setResidentId] = useState('');
   const [nameResident, setNameResident] = useState('');
-  const [birthdayResident, setBirthdayResident] = useState('');
+  const [birthdayResident, setBirthdayResident] = useState(null);
   const [citizenshipResidentId, setCitizenshipResidentId] = useState('');
-  
+
 
   const resetFields = () => {
     setResidentId('');
     setNameResident('');
-    setBirthdayResident('');
+    setBirthdayResident(null);
     setCitizenshipResidentId('');
   };
 
   const handleAddResidentModal = () => {
-    const newResident = { residentId,nameResident,birthdayResident,citizenshipResidentId };
+    const formattedBirthday = birthdayResident ? birthdayResident.format('YYYY-MM-DD') : ''
+    const newResident = { residentId, nameResident, birthdayResident:formattedBirthday, citizenshipResidentId };
     handleAddResident(newResident);
     resetFields();
     handleClose();
@@ -41,8 +58,8 @@ export default function AddResidentModal({ open, handleClose,handleAddResident }
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6"  component="h2">
-          Thêm cư dân 
+        <Typography id="modal-modal-title" variant="h6" component="h2">
+          Thêm cư dân
         </Typography>
         <Box>
           <TextField
@@ -59,13 +76,25 @@ export default function AddResidentModal({ open, handleClose,handleAddResident }
             fullWidth
             margin="normal"
           />
-          <TextField
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={['DatePicker']}>
+              <DatePicker 
+              label="Ngày sinh"
+              value={birthdayResident}
+              onChange={(date) => setBirthdayResident(date)}
+              fullWidth
+              margin="normal" 
+              sx={{width:'100%'}}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+          {/* <TextField
             label="Ngày sinh"
             value={birthdayResident}
             onChange={(e) => setBirthdayResident(e.target.value)}
             fullWidth
             margin="normal"
-          />
+          /> */}
           <TextField
             label="Căn cước công dân "
             value={citizenshipResidentId}
@@ -74,9 +103,9 @@ export default function AddResidentModal({ open, handleClose,handleAddResident }
             margin="normal"
           />
         </Box>
-        <br/>
-        <Button  variant="contained" onClick={() => handleAddResidentModal({ residentId,nameResident,birthdayResident,citizenshipResidentId })}>
-           Thêm thông tin
+        <br />
+        <Button variant="contained" onClick={() => handleAddResidentModal({ residentId, nameResident, birthdayResident, citizenshipResidentId })}>
+          Thêm thông tin
         </Button>
       </Box>
     </Modal>
