@@ -1,4 +1,4 @@
-import axiosClient from "./axios-client";
+import axiosClient from "./AxiosClient.js";
 
 const serviceApi = {
     getAllServices: () => {
@@ -6,7 +6,10 @@ const serviceApi = {
         return axiosClient.get(url)
     },
     createNewSevice: (params) => {
-        
+        const url="/service";
+        return axiosClient.post(url, {
+            params
+        })
     }
 }
 

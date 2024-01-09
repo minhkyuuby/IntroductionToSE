@@ -15,7 +15,7 @@ const style = {
 
 export default function AddServiceModal({ open, handleClose,handleAddService }) {
   const [serviceName, setServiceName] = useState('');
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(0);
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [unit, setUnit] = useState('');
@@ -65,9 +65,8 @@ export default function AddServiceModal({ open, handleClose,handleAddService }) 
             inputProps={{ 'aria-label': 'Without label' }}
             margin="normal"
           >
-            <MenuItem value="">Chọn trạng thái</MenuItem>
-            <MenuItem value="Đang hoạt động">Đang hoạt động</MenuItem>
-            <MenuItem value="Ngừng hoạt động">Ngừng hoạt động</MenuItem>
+            <MenuItem value={0}>Đang hoạt động</MenuItem>
+            <MenuItem value={1}>Ngừng hoạt động</MenuItem>
           </Select>
           <TextField
             label="Mô tả"
@@ -95,7 +94,12 @@ export default function AddServiceModal({ open, handleClose,handleAddService }) 
             margin="normal"
           >
             <MenuItem value=""> Không có đơn vị</MenuItem>
-            <MenuItem value="Đơn vị 1">m²</MenuItem>
+            <MenuItem value="square-meter">square-meter (m²)</MenuItem>
+            <MenuItem value="cubic-meter">cubic-meter (m³)</MenuItem>
+            <MenuItem value="number">number - số</MenuItem>
+            <MenuItem value="bike">bike (xe đạp)</MenuItem>
+            <MenuItem value="moto">moto (xe máy)</MenuItem>
+            <MenuItem value="car">car (ô tô)</MenuItem>
             {/* Thêm các đơn vị khác nếu cần */}
           </Select>
         </Box>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Box, Typography, Button, TextField, createTheme } from '@mui/material';
+import { Modal, Box, Typography, Button, TextField } from '@mui/material';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -15,18 +15,18 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#7FC7D9',
-      contrastText: '#ffffff',
-    },
-    secondary: {
-      main: '#f50057',
-    },
-  },
-});
+// const theme = createTheme({
+//   palette: {
+//     mode: 'light',
+//     primary: {
+//       main: '#7FC7D9',
+//       contrastText: '#ffffff',
+//     },
+//     secondary: {
+//       main: '#f50057',
+//     },
+//   },
+// });
 
 
 export default function AddResidentModal({ open, handleClose, handleAddResident }) {
