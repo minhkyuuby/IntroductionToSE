@@ -25,7 +25,7 @@ export default function ResidentTable({ rows }) {
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <TableRow key={row.name}>
+            <TableRow key={row.residentId}>
               {columns.map((column) => (
                 <TableCell key={column.id} >
                   {row[column.id]}
