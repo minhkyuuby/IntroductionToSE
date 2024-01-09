@@ -1,206 +1,154 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import AddIcon from '@mui/icons-material/Add';
+import React, { useEffect, useState } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Close';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import TablePagination from '@mui/material/TablePagination';
+import EditRoomModal from './EditRoomModal';
 
-import {
-  GridRowModes,
-  DataGrid,
-  GridToolbarContainer,
-  GridActionsCellItem,
-  GridRowEditStopReasons,
-} from '@mui/x-data-grid';
-import SearchBox from './SearchBox';
+const columns = [
+  { id: 'roomName', label: 'Tên phòng' },
+  { id: 'status', label: 'Trạng thái' },
+  { id: 'area', label: 'Diện tích (m²)' },
+  { id: 'numResidents', label: 'Số người' },
+  { id: 'actions', label: 'Xóa' }, // New column for the delete button
+];
 
-const initialRows = []; // Define your initial rows here
+const cellStyle = {
+  textAlign: 'center',
+  verticalAlign: 'middle',
+};
 
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#7FC7D9',
-      contrastText: '#ffffff',
-    },
-    secondary: {
-      main: '#f50057',
-    },
-  },
-});
+export default function RoomTable({ rows, setRows }) {
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 5; // Set the default rows per page to 5
 
-function EditToolbar(props) {
-  const { setRows, setRowModesModel } = props;
-
-  const handleClick = () => {
-    const id = Math.random().toString(36).substring(7);
-    setRows((oldRows) => [...oldRows, { id, roomName: '', status: '', area: 0, numResidents: 0, isNew: true }]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'roomName' },
-    }));
+  const handleDeleteClick = (rowIndex) => {
+    setSelectedRow(rowIndex);
+    setDeleteConfirmationOpen(true);
   };
+
+  const handleDeleteConfirm = () => {
+    const newRows = [...rows];
+    newRows.splice(selectedRow, 1);
+    setRows(newRows);
+    setDeleteConfirmationOpen(false);
+  };
+
+  const handleDeleteCancel = () => {
+    setSelectedRow(null);
+    setDeleteConfirmationOpen(false);
+  };
+
+  const handleEditClick = (rowIndex) => {
+    setSelectedRow(rowIndex);
+    setEditModalOpen(true);
+  };
+
+  useEffect(() => {
+    // Bất cứ thay đổi nào trong rows sẽ kích hoạt lại hàm này
+    console.log("Rows changed:", rows);
+  }, [rows]);
+
+  // Tính toán số hàng trống cần thêm vào cuối bảng
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
 
   return (
-    <GridToolbarContainer sx={{justifyContent: 'space-between', marginRight: 5}}>
-      <ThemeProvider theme={theme}>
-        <SearchBox></SearchBox>
-        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-          Thêm phòng
-        </Button>
-      </ThemeProvider>
-    </GridToolbarContainer>
-  );
-}
-
-export default function FullFeaturedCrudGrid() {
-  const [rows, setRows] = React.useState(initialRows);
-  const [rowModesModel, setRowModesModel] = React.useState({});
-
-  const handleRowEditStop = (params, event) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-    }
-  };
-
-  const handleEditClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
-
-  const handleSaveClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
-
-  const handleDeleteClick = (id) => () => {
-    setRows(rows.filter((row) => row.id !== id));
-  };
-
-  const handleCancelClick = (id) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
-
-    const editedRow = rows.find((row) => row.id === id);
-    if (editedRow.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
-  };
-
-  const processRowUpdate = (newRow) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
-  };
-
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70, headerAlign: 'center', align: 'center', editable: true },
-    { field: 'roomName', headerName: 'Tên Phòng', width: 200, headerAlign: 'center', align: 'center', editable: true, },
-    { field: 'status', headerName: 'Trạng thái', width: 200, headerAlign: 'center', align: 'center', editable: true, },
-    {
-      field: 'area',
-      headerName: 'Diện tích',
-      sortable: false,
-      type: 'number',
-      width: 200,
-      headerAlign: 'center',
-      align: 'center',
-      valueFormatter: (params) => `${params.value} m²`,
-      editable: true,
-    },
-    {
-      field: 'numResidents',
-      headerName: 'Số cư dân',
-      type: 'number',
-      sortable: false,
-      width: 160,
-      headerAlign: 'center',
-      align: 'center',
-      editable: true,
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      width: 100,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              sx={{
-                color: 'primary.main',
-              }}
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
-          ];
-        }
-
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
-        ];
-      },
-    },
-  ];
-
-  return (
-    <Box
-      sx={{
-        height: 500,
-        width: '100%',
-        '& .actions': {
-          color: 'text.secondary',
-        },
-        '& .textPrimary': {
-          color: 'text.primary',
-        },
-      }}
-    >
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        slots={{
-          toolbar: EditToolbar,
-        }}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel },
-        }}
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650, size: 'small'}} aria-label="simple table">
+        <TableHead style={{ backgroundColor: '#7FC7D9', color: 'white' }}>
+          <TableRow>
+            {columns.map((column) => (
+              <TableCell key={column.id} style={cellStyle}>{column.label}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, rowIndex) => (
+            <TableRow key={rowIndex}>
+              {columns.map((column) => (
+                <TableCell key={column.id} style={cellStyle}>
+                  {column.id === 'actions' ? (
+                    <>
+                      <IconButton aria-label="edit" size="small" onClick={() => handleEditClick(row)}>
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton aria-label="delete" size="small" onClick={() => handleDeleteClick(rowIndex)} style={{ color: '#f23a3a' }}>
+                       <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </>
+                  ) : (
+                    row[column.id]
+                  )}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+          {/* Thêm hàng trống vào cuối bảng */}
+          {emptyRows > 0 && (
+            <TableRow style={{ height: 62.67 * emptyRows }}>
+              <TableCell colSpan={5} />
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      <Dialog
+        open={deleteConfirmationOpen}
+        onClose={handleDeleteCancel}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Xác nhận"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Bạn có chắc chắn muốn xóa phòng này không?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={handleDeleteCancel} 
+            sx={{
+              backgroundColor: '#E8E8E8', 
+              color: '#2E2E2E',
+              '&:hover': {
+                backgroundColor: '#DCDCDC', 
+              },
+            }}>
+            Hủy
+          </Button>
+          <Button 
+            onClick={handleDeleteConfirm} 
+            sx={{ 
+              backgroundColor: '#f23a3a', 
+              color: '#FFFFFF', 
+              border: 1,
+              '&:hover': {
+                  backgroundColor: '#E00000', 
+                },
+              }} 
+            autoFocus>
+            Xác nhận 
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <TablePagination
+        rowsPerPageOptions={[rowsPerPage]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={(event, newPage) => setPage(newPage)}
       />
-    </Box>
+      <EditRoomModal
+        open={editModalOpen}
+        handleClose={() => setEditModalOpen(false)}
+        selectedRow={selectedRow}
+        setRows={setRows}
+      />
+    </TableContainer>
+    
   );
 }
