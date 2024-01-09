@@ -1,15 +1,14 @@
 import React, { useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from '@mui/material';
 
-const columns = [
-  { id: 'serviceName', label: 'Tên dịch vụ' },
-  { id: 'status', label: 'Trạng thái' },
-  { id: 'description', label: 'Mô tả' },
-  { id: 'price', label: 'Giá (nghìn đồng)' },
-  { id: 'unit', label: 'Đơn vị' },
-];
 
-export default function ServiceTable({ rows }) {
+const columns = [
+  { id: 'residentId', label: 'Mã cư dân' },
+  { id: 'nameResident', label: 'Họ tên' },
+  { id: 'birthdayResident', label: 'Ngày sinh' },
+  { id: 'citizenshipResidentId', label: 'Căn cước công dân ' },
+]
+export default function ResidentTable({ rows }) {
   useEffect(() => {
     // Bất cứ thay đổi nào trong rows sẽ kích hoạt lại hàm này
     console.log("Rows changed:", rows);
@@ -39,3 +38,4 @@ export default function ServiceTable({ rows }) {
     </TableContainer>
   );
 }
+

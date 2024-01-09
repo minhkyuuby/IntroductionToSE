@@ -2,14 +2,12 @@ import React, { useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from '@mui/material';
 
 const columns = [
-  { id: 'serviceName', label: 'Tên dịch vụ' },
-  { id: 'status', label: 'Trạng thái' },
-  { id: 'description', label: 'Mô tả' },
-  { id: 'price', label: 'Giá (nghìn đồng)' },
-  { id: 'unit', label: 'Đơn vị' },
+  { id: 'vehicleRoom', label: 'Phòng sở hữu xe' },
+  { id: 'vehicleName', label: 'Tên xe' },
+  { id: 'vehicleId', label: 'Loại xe' },
 ];
 
-export default function ServiceTable({ rows }) {
+export default function VechicleTable({ rows }) {
   useEffect(() => {
     // Bất cứ thay đổi nào trong rows sẽ kích hoạt lại hàm này
     console.log("Rows changed:", rows);
