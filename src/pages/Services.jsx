@@ -64,6 +64,27 @@ export default function Services() {
   const handleAddService = (newService) => {
     serviceApi.createNewSevice(newService).then(()=> {
       
+      //re fresh lại bảng 
+      serviceApi.getAllServices().then(response => {
+
+        const services = response.map(item => {
+          // Parse chuỗi JSON từ trường 'info'
+          const infoObject = JSON.parse(item.info);
+        
+          return {
+            id: item.id,
+            name: item.name,
+            status: infoObject.status === 0? "hoạt động" : "không hoạt động",
+            description: infoObject.description,
+            price: infoObject.price,
+            unit: infoObject.unit,
+            // Thêm các thuộc tính khác nếu có
+          };
+        });
+  
+        setRows(services);
+      })
+
     }).catch((e) => {
       console.log("Thông báo cái gì đó ở đây là không tạo được service!");
       console.log(e)
