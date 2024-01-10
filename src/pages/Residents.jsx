@@ -63,10 +63,15 @@ export default function Residents() {
       <ThemeProvider theme={theme}>     
        <Button onClick={handleOpenModal} variant="contained" color="primary" startIcon={<AddIcon />}>Thêm cư dân mới</Button>
        </ThemeProvider>
-      <AddResidentModal open={openModal} handleClose={handleCloseModal} handleAddResident={handleAddResident} />
+      <AddResidentModal
+       open={openModal}
+       handleClose={handleCloseModal} 
+       handleAddResident={handleAddResident}
+        setRows={setRows} // Thêm prop setRows vào AddResidentModal
+       />
       </Box>
       <hr />
-      <ResidentTable rows={rows} />
+      <ResidentTable rows={rows} setRows={setRows} />
     </Container>
 
   )
