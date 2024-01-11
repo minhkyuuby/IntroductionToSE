@@ -104,8 +104,8 @@ export default function Residents() {
   };
 
   return (
-    <Container component= "main" sx={{width: 1000}}>
-      <Typography component="h1" variant="h6" 
+    <Container component="main" sx={{ width: 1000 }}>
+      <Typography component="h1" variant="h6"
         sx={{
           backgroundColor: '#DCF2F1',
           height: 40,
