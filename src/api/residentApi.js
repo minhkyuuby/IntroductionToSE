@@ -7,7 +7,9 @@ const residentApi = {
     },
 
     createNewResident: (params) => {
+        console.log("create here!")
         console.log(params)
+
         const url="/people";
         return axiosClient.post(url,
             params

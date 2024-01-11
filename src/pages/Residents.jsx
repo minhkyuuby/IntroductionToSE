@@ -35,13 +35,12 @@ export default function Residents() {
       
         return {
           id: item.id,
-          residentID: infoObject.residentID,
+          residentId: infoObject.residentId,
           fullname: infoObject.fullname,
           birthdayResident: infoObject.birthdayResident,
           phone_number: infoObject.phone_number,
           identity: infoObject.cccd,
         };
-        console.log(item.info)
       });
 
       console.log(residents)
@@ -64,16 +63,18 @@ export default function Residents() {
 
   // Function to add a new Resident row to the table
   const handleAddResident = (newResident) => {
+    console.log('handle add here')
+    console.log(newResident.residentId)
     const requestBody = {
-      id: 0, 
       info: {
         fullname: newResident.fullname,
         phone_number: '', 
         cccd: newResident.identity, 
         birthdayResident: newResident.birthdayResident,
-        residentID: newResident.residentID
+        residentId: newResident.residentId
       },
-    }; console.log(newResident.residentID)
+    };
+    
 
     residentAPI.createNewResident(requestBody).then(()=> {
       
@@ -98,7 +99,7 @@ export default function Residents() {
       })
 
     }).catch((e) => {
-      console.log("Thông báo cái gì đó ở đây là không tạo được service!");
+      console.log("Thông báo cái gì đó ở đây là không tạo được resident!");
       console.log(e)
     })
   };

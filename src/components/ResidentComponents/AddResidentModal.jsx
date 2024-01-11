@@ -50,11 +50,13 @@ export default function AddResidentModal({ open, handleClose, handleAddResident,
   const handleAddResidentModal = () => {
     const formattedBirthday = birthdayResident ? birthdayResident.format('YYYY-MM-DD') : ''
     const newResident = { 
-      residentId, 
+      residentId: residentId, 
       fullname, 
       birthdayResident: formattedBirthday, 
       identity 
     };
+    // console.log("create new resident here!")
+    // console.log(newResident)
     handleAddResident(newResident);
     resetFields();
     handleClose();
@@ -114,7 +116,7 @@ export default function AddResidentModal({ open, handleClose, handleAddResident,
         </Box>
         <br />
         <ThemeProvider theme={theme}>
-          <Button variant="contained" onClick={() => handleAddResidentModal({ residentId, fullname, birthdayResident, identity })}>
+          <Button variant="contained" onClick={() => handleAddResidentModal()}>
             Thêm thông tin
           </Button>
         </ThemeProvider>
