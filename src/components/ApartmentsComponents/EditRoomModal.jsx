@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Box, Typography, Button, TextField, Select, MenuItem } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import apartmentApi from '../../api/apartmentApi';
+import apartmentApi from '../../api/apartmentApi.js';
 
 const style = {
     position: 'absolute',
@@ -45,8 +45,11 @@ const style = {
     const handleEditRoom = () => {
       const updatedRoomData = {
         name: roomName,
-        status: status === "Đang hoạt động" ? 0 : 1,
-        area: parseInt(area), 
+        info: {
+          status: status === "Đang hoạt động" ? 0 : 1,
+          area: parseInt(area), 
+        }
+        
       };
   
       apartmentApi.editRoom(selectedRow.id, updatedRoomData)
