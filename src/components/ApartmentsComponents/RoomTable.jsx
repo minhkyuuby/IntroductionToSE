@@ -4,13 +4,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import TablePagination from '@mui/material/TablePagination';
 import EditRoomModal from './EditRoomModal';
+import apartmentApi from '../../api/apartmentApi';
 
 const columns = [
-  { id: 'roomName', label: 'Tên phòng' },
+  { id: 'name', label: 'Tên phòng' },
   { id: 'status', label: 'Trạng thái' },
   { id: 'area', label: 'Diện tích (m²)' },
-  { id: 'numResidents', label: 'Số người' },
-  { id: 'actions', label: 'Xóa' }, // New column for the delete button
+  { id: 'actions', label: 'Xóa' }, 
 ];
 
 const cellStyle = {
@@ -23,7 +23,7 @@ export default function RoomTable({ rows, setRows }) {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [page, setPage] = useState(0);
-  const rowsPerPage = 5; // Set the default rows per page to 5
+  const rowsPerPage = 5; 
 
   const handleDeleteClick = (rowIndex) => {
     setSelectedRow(rowIndex);
@@ -31,10 +31,36 @@ export default function RoomTable({ rows, setRows }) {
   };
 
   const handleDeleteConfirm = () => {
-    const newRows = [...rows];
-    newRows.splice(selectedRow, 1);
-    setRows(newRows);
-    setDeleteConfirmationOpen(false);
+    const roomIdToDelete = rows[selectedRow].id; 
+  
+    // Call the API to delete the room with the obtained ID
+    apartmentApi.deleteRoom(roomIdToDelete)
+      .then(() => {
+        // If the deletion is successful, update the UI by fetching updated room data
+        return apartmentApi.getAllApartments();
+      })
+      .then(response => {
+        // Map the response to format it for the table
+        const updatedRooms = response.map(item => {
+          const infoObject = JSON.parse(item.info);
+          return {
+            id: item.id,
+            name: item.name,
+            status: infoObject.status === 0 ? "Đang hoạt động" : "Không hoạt động",
+            area: infoObject.area,
+          };
+        });
+        // Update the state with the updated room data
+        setRows(updatedRooms);
+      })
+      .catch((error) => {
+        // Handle any errors that occur during the API call
+        console.error("Error deleting room or fetching updated rooms:", error);
+      })
+      .finally(() => {
+        // Close the delete confirmation dialog
+        setDeleteConfirmationOpen(false);
+      });
   };
 
   const handleDeleteCancel = () => {
@@ -42,8 +68,10 @@ export default function RoomTable({ rows, setRows }) {
     setDeleteConfirmationOpen(false);
   };
 
+  const [selectedRowData, setSelectedRowData] = useState(null);
+
   const handleEditClick = (rowIndex) => {
-    setSelectedRow(rowIndex);
+    setSelectedRowData(rows[rowIndex]);
     setEditModalOpen(true);
   };
 
@@ -52,9 +80,7 @@ export default function RoomTable({ rows, setRows }) {
     console.log("Rows changed:", rows);
   }, [rows]);
 
-  // Tính toán số hàng trống cần thêm vào cuối bảng
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
 
   return (
     <TableContainer component={Paper}>
@@ -73,7 +99,7 @@ export default function RoomTable({ rows, setRows }) {
                 <TableCell key={column.id} style={cellStyle}>
                   {column.id === 'actions' ? (
                     <>
-                      <IconButton aria-label="edit" size="small" onClick={() => handleEditClick(row)}>
+                      <IconButton aria-label="edit" size="small" onClick={() => handleEditClick(rowIndex)}>
                         <EditIcon fontSize="small" />
                       </IconButton>
                       <IconButton aria-label="delete" size="small" onClick={() => handleDeleteClick(rowIndex)} style={{ color: '#f23a3a' }}>
@@ -87,10 +113,9 @@ export default function RoomTable({ rows, setRows }) {
               ))}
             </TableRow>
           ))}
-          {/* Thêm hàng trống vào cuối bảng */}
           {emptyRows > 0 && (
             <TableRow style={{ height: 62.67 * emptyRows }}>
-              <TableCell colSpan={5} />
+              <TableCell colSpan={4} />
             </TableRow>
           )}
         </TableBody>
@@ -145,7 +170,7 @@ export default function RoomTable({ rows, setRows }) {
       <EditRoomModal
         open={editModalOpen}
         handleClose={() => setEditModalOpen(false)}
-        selectedRow={selectedRow}
+        selectedRow={selectedRowData}
         setRows={setRows}
       />
     </TableContainer>

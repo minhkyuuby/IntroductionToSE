@@ -29,24 +29,25 @@ const theme = createTheme({
 
 export default function AddRoomModal({ open, handleClose,handleAddRoom }) {
   const [roomName, setRoomName] = useState('');
-  const [status, setStatus] = useState('');
-  const [area, setArea] = useState('');
-  const [numResidents, setNumResidents] = useState('');
+  const [status, setStatus] = useState(0);
+  const [area, setArea] = useState(0);
 
   const resetFields = () => {
     setRoomName('');
-    setStatus('');
-    setArea('');
-    setNumResidents('');
+    setStatus(0);
+    setArea(0);
     handleClose();
   };
 
   const handleAddRoomModal = () => {
-    const newRoom = { roomName, status, area, numResidents };
+    const info = { status, area };
+    const newRoom = { name: roomName, info };
+  
     handleAddRoom(newRoom);
     resetFields();
     handleClose();
   };
+  
   return (
     <Modal
       open={open}
@@ -77,17 +78,9 @@ export default function AddRoomModal({ open, handleClose,handleAddRoom }) {
             inputProps={{ 'aria-label': 'Without label' }}
             margin="normal"
           >
-            <MenuItem value="">Chọn trạng thái</MenuItem>
-            <MenuItem value="Đang hoạt động">Đang hoạt động</MenuItem>
-            <MenuItem value="Ngừng hoạt động">Ngừng hoạt động</MenuItem>
+            <MenuItem value={0}>Đang hoạt động</MenuItem>
+            <MenuItem value={1}>Không hoạt động</MenuItem>
           </Select>
-          <TextField
-            label="Số người"
-            value={numResidents}
-            onChange={(e) => setNumResidents(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
           <TextField
             label="Diện tích"
             value={area}
@@ -98,7 +91,7 @@ export default function AddRoomModal({ open, handleClose,handleAddRoom }) {
         </Box>
         <br/>
         <ThemeProvider theme={theme}>
-          <Button  variant="contained" onClick={() => handleAddRoomModal({ roomName, status, area, numResidents})}>
+          <Button  variant="contained" onClick={() => handleAddRoomModal({ roomName, status, area })}>
             Thêm phòng
           </Button>
         </ThemeProvider>

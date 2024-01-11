@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Button ,Box,Typography} from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import RoomTable from '../components/ApartmentsComponents/RoomTable';
 import AddRoomModal from '../components/ApartmentsComponents/AddRoomModal';
+import apartmentApi from '../api/apartmentApi.js';
+
 const initialRows = [
   // Initial data for the table
 ];
@@ -19,9 +21,33 @@ const theme = createTheme({
     },
   },
 });
+
 export default function Apartments() {
   const [openModal, setOpenModal] = useState(false);
   const [rows, setRows] = useState(initialRows);
+
+  useEffect(() => {
+    apartmentApi.getAllApartments().then(response => {
+
+      const rooms = response.map(item => {
+        // Parse chuỗi JSON từ trường 'info'
+        const infoObject = JSON.parse(item.info);
+      
+        return {
+          id: item.id,
+          name: item.name,
+          status: infoObject.status === 0? "Đang hoạt động" : "Không hoạt động",
+          area: infoObject.area,
+        };
+      });
+
+      setRows(rooms);
+
+
+    }).catch(() => {
+        setRows(initialRows)
+    })
+  }, []);
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -33,7 +59,30 @@ export default function Apartments() {
 
   // Function to add a new service row to the table
   const handleAddRoom = (newRoom) => {
-    setRows([...rows, newRoom]);
+    apartmentApi.createNewRoom(newRoom).then(()=> {
+      
+      //re fresh lại bảng 
+      apartmentApi.getAllApartments().then(response => {
+
+        const rooms = response.map(item => {
+          // Parse chuỗi JSON từ trường 'info'
+          const infoObject = JSON.parse(item.info);
+        
+          return {
+            id: item.id,
+            name: item.name,
+            status: infoObject.status === 0? "Đang hoạt động" : "Không hoạt động",
+            area: infoObject.area,
+          };
+        });
+  
+        setRows(rooms);
+      })
+
+    }).catch((e) => {
+      console.log("Thông báo cái gì đó ở đây là không tạo được service!");
+      console.log(e)
+    })
   };
 
   return (
