@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Button, Typography, Box } from '@mui/material';
 import AddResidentModal from '../components/ResidentComponents/AddResidentModal';
 import ResidentTable from '../components/ResidentComponents/ResidentTable';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
+import residentAPI from '../api/residentApi';
+
 const initialRows = [
   // Initial data for the table
 ];
@@ -24,6 +26,34 @@ export default function Residents() {
   const [openModal, setOpenModal] = useState(false);
   const [rows, setRows] = useState(initialRows);
 
+  useEffect(() => {
+    residentAPI.getAllResidents().then(response => {
+
+      const residents = response.map(item => {
+        // Parse chuỗi JSON từ trường 'info'
+        const infoObject = JSON.parse(item.info);
+      
+        return {
+          id: item.id,
+          residentID: infoObject.residentID,
+          fullname: infoObject.fullname,
+          birthdayResident: infoObject.birthdayResident,
+          phone_number: infoObject.phone_number,
+          identity: infoObject.cccd,
+        };
+        console.log(item.info)
+      });
+
+      console.log(residents)
+
+      setRows(residents);
+
+
+    }).catch(() => {
+        setRows(initialRows)
+    })
+  }, []);
+
   const handleOpenModal = () => {
     setOpenModal(true);
   };
@@ -34,7 +64,43 @@ export default function Residents() {
 
   // Function to add a new Resident row to the table
   const handleAddResident = (newResident) => {
-    setRows([...rows, newResident]);
+    const requestBody = {
+      id: 0, 
+      info: {
+        fullname: newResident.fullname,
+        phone_number: '', 
+        cccd: newResident.identity, 
+        birthdayResident: newResident.birthdayResident,
+        residentID: newResident.residentID
+      },
+    }; console.log(newResident.residentID)
+
+    residentAPI.createNewResident(requestBody).then(()=> {
+      
+      //re fresh lại bảng 
+      residentAPI.getAllResidents().then(response => {
+
+        const updatedRows = response.map(item => {
+          // Parse chuỗi JSON từ trường 'info'
+          const infoObject = JSON.parse(item.info);
+        
+          return {
+            id: item.id,
+            fullname: infoObject.fullname,
+            phone_number: infoObject.phone_number,
+            identity: infoObject.cccd,
+            birthdayResident: infoObject.birthdayResident, 
+            residentId: infoObject.residentId,
+          };
+        });
+  
+        setRows(updatedRows);
+      })
+
+    }).catch((e) => {
+      console.log("Thông báo cái gì đó ở đây là không tạo được service!");
+      console.log(e)
+    })
   };
 
   return (
@@ -64,10 +130,10 @@ export default function Residents() {
        <Button onClick={handleOpenModal} variant="contained" color="primary" startIcon={<AddIcon />}>Thêm cư dân mới</Button>
        </ThemeProvider>
       <AddResidentModal
-       open={openModal}
-       handleClose={handleCloseModal} 
-       handleAddResident={handleAddResident}
-        setRows={setRows} // Thêm prop setRows vào AddResidentModal
+        open={openModal}
+        handleClose={handleCloseModal} 
+        handleAddResident={handleAddResident}
+        // setRows={setRows} // Thêm prop setRows vào AddResidentModal
        />
       </Box>
       <hr />
