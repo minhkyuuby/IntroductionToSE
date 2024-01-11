@@ -38,8 +38,8 @@ export default function Residents() {
   };
 
   return (
-    <Container component= "main" sx={{width: 1000}}>
-      <Typography component="h1" variant="h6" 
+    <Container component="main" sx={{ width: 1000 }}>
+      <Typography component="h1" variant="h6"
         sx={{
           backgroundColor: '#DCF2F1',
           height: 40,
@@ -49,26 +49,26 @@ export default function Residents() {
           boxShadow: 3,
           marginTop: 5,
           marginBottom: 2,
-          }}>
-          Danh sách cư dân 
-        </Typography>
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'space-between',
-            marginBottom: 2,
-            marginRight: 10
-          }}>
-      <ThemeProvider theme={theme}>     
-       <Button onClick={handleOpenModal} variant="contained" color="primary" startIcon={<AddIcon />}>Thêm cư dân mới</Button>
-       </ThemeProvider>
-      <AddResidentModal
-       open={openModal}
-       handleClose={handleCloseModal} 
-       handleAddResident={handleAddResident}
-        setRows={setRows} // Thêm prop setRows vào AddResidentModal
-       />
+        }}>
+        Danh sách cư dân
+      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: 2,
+          marginRight: 10
+        }}>
+        <ThemeProvider theme={theme}>
+          <Button onClick={handleOpenModal} variant="contained" color="primary" startIcon={<AddIcon />}>Thêm cư dân mới</Button>
+        </ThemeProvider>
+        <AddResidentModal
+          open={openModal}
+          handleClose={handleCloseModal}
+          handleAddResident={handleAddResident}
+          setRows={setRows} // Thêm prop setRows vào AddResidentModal
+        />
       </Box>
       <hr />
       <ResidentTable rows={rows} setRows={setRows} />
