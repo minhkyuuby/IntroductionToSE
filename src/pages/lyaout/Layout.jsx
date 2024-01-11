@@ -1,12 +1,11 @@
 import React from "react";
 import Sidebar from "./Sidebar";
-import { Container } from "@mui/material";
 
 // Pass the child props
-export default function Layout({ children, page = "dashboard" }) {
+export default function Layout({ children, page = "Dashboard" }) {
   return (
     <div>
-      <Sidebar/>
+      <Sidebar highlightedItem={page}/>
 
       {/* display the child prop */}
       {children}
