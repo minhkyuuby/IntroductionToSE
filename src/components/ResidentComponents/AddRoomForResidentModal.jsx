@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Box, Typography, Button, Card, CardContent, Grid } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import apartmentApi from '../../api/apartmentApi';
-import residentApi from '../../api/residentApi';
 import pair_apartment_peopleAPI from '../../api/pairApartmentResidentAPI';
 
 const style = {
@@ -76,7 +75,6 @@ export default function AddRoomForResidentModal({ open, handleClose, residentId 
         id_people: residentId
       })
     .then(() => {
-      console.log('Pair deleted successfully.');
       // Add the new pair
       return pair_apartment_peopleAPI.createNewPair({
         id_apartment: cardId,
@@ -85,7 +83,6 @@ export default function AddRoomForResidentModal({ open, handleClose, residentId 
     })
     .then(response => {
       // Handle the response if needed
-      console.log('New pair created:', response);
     })
     .catch(error => {
       // Handle errors

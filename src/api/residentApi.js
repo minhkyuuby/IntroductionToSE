@@ -7,9 +7,6 @@ const residentApi = {
     },
 
     createNewResident: (params) => {
-        console.log("create here!")
-        console.log(params)
-
         const url="/people";
         return axiosClient.post(url,
             params
@@ -17,18 +14,17 @@ const residentApi = {
     },
 
     deleteResident: (residentID) => {
-        console.log(residentID)
         const url = `/people/${residentID}`;
         return axiosClient.delete(url)
     },
 
     editResident: (residentID, updatedResidentData) => {
+        console.log(updatedResidentData)
         const url = `/people/${residentID}`;
         return axiosClient.put(url, updatedResidentData);
     },
     
     getPeopleApartments: (residentID) => {
-        console.log(residentID)
         const url = `/people/${residentID}/apartments`
         return axiosClient.get(url);
     }

@@ -76,8 +76,7 @@ export default function RoomTable({ rows, setRows }) {
   };
 
   useEffect(() => {
-    // Bất cứ thay đổi nào trong rows sẽ kích hoạt lại hàm này
-    console.log("Rows changed:", rows);
+
   }, [rows]);
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);

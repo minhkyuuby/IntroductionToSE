@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Box, Typography, Button, TextField, createTheme } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Modal, Box, Typography, Button, TextField, Select, MenuItem } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import residentApi from '../../api/residentApi';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { ThemeProvider } from '@mui/material/styles';
 import dayjs from 'dayjs';
 
 const style = {
@@ -14,11 +15,11 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  border: '2px transform #000',
+  border: '2px solid #000',
   boxShadow: 24,
   p: 4,
-  borderRadius: 2
 };
+
 const theme = createTheme({
   palette: {
     mode: 'light',
@@ -32,37 +33,55 @@ const theme = createTheme({
   },
 });
 
-
-export default function AddResidentModal({ open, handleClose, selectedRow, setRows,handleUpdateRow }) {
+export default function EditResidentModal({ open, handleClose, selectedRow, setRows }) {
   const [residentId, setResidentId] = useState('');
-  const [nameResident, setNameResident] = useState('');
-  const [birthdayResident, setBirthdayResident] = useState(null);
-  const [citizenshipResidentId, setCitizenshipResidentId] = useState('');
+  const [fullname, setFullname] = useState('');
+  const [birthdayResident, setBirthdayResident] = useState('');
+  const [identity, setIdentity] = useState('');
+
   useEffect(() => {
     if (selectedRow) {
       setResidentId(selectedRow.residentId);
-      setNameResident(selectedRow.nameResident);
+      setFullname(selectedRow.fullname);
       setBirthdayResident(selectedRow.birthdayResident);
-      setCitizenshipResidentId(selectedRow.citizenshipResidentId);
+      setIdentity(selectedRow.identity);
     }
   }, [selectedRow]);
 
-  const handleSaveChanges = () => {
-    const formattedBirthday = birthdayResident ? dayjs(birthdayResident).format('YYYY-MM-DD') : ''
-    const updatedRow = { ...selectedRow, residentId, nameResident, birthdayResident : formattedBirthday, citizenshipResidentId };
-    setRows(prevRows => {
-      const rowIndex = prevRows.findIndex(row => row === selectedRow);
-      if (rowIndex !== -1) {
-        const updatedRows = [...prevRows];
-        updatedRows[rowIndex] = updatedRow;
-        return updatedRows;
+  const handleEditResident = () => {
+    const updatedResidentData = {
+      info: {
+        fullname: fullname,
+        identity: identity,
+        residentId: residentId,
+        birthdayResident: dayjs(birthdayResident).format('YYYY-MM-DD'),
       }
-      return prevRows;
-    });
-    handleUpdateRow(updatedRow);
-    handleClose();
-  };
+    };
 
+    residentApi.editResident(selectedRow.id, updatedResidentData)
+      .then(() => {
+        return residentApi.getAllResidents();
+      })
+      .then(response => {
+        const updatedResidents = response.map(item => {
+          const infoObject = JSON.parse(item.info);
+          return {
+            id: item.id,
+            fullname: infoObject.fullname,
+            birthdayResident: infoObject.birthdayResident,
+            identity: infoObject.identity,
+            residentId: infoObject.residentId,
+          };
+        });
+        setRows(updatedResidents);
+      })
+      .catch(error => {
+        console.error("Error editing resident or fetching updated residents:", error);
+      })
+      .finally(() => {
+        handleClose();
+      });
+  };
 
   return (
     <Modal
@@ -84,9 +103,9 @@ export default function AddResidentModal({ open, handleClose, selectedRow, setRo
             margin="normal"
           />
           <TextField
-            label="Họ tên"
-            value={nameResident}
-            onChange={(e) => setNameResident(e.target.value)}
+            label="Họ và tên"
+            value={fullname}
+            onChange={(e) => setFullname(e.target.value)}
             fullWidth
             margin="normal"
           />
@@ -95,31 +114,23 @@ export default function AddResidentModal({ open, handleClose, selectedRow, setRo
               <DatePicker
                 label="Ngày sinh"
                 value={dayjs(birthdayResident)}
-                onChange={(date) => setBirthdayResident(date)}
+                onChange={(date) => setBirthdayResident(date.format('YYYY-MM-DD'))}
                 fullWidth
                 margin="normal"
                 sx={{ width: '100%' }}
               />
             </DemoContainer>
           </LocalizationProvider>
-          {/* <TextField
-            label="Ngày sinh"
-            value={birthdayResident}
-            onChange={(e) => setBirthdayResident(e.target.value)}
-            fullWidth
-            margin="normal"
-          /> */}
           <TextField
-            label="Căn cước công dân "
-            value={citizenshipResidentId}
-            onChange={(e) => setCitizenshipResidentId(e.target.value)}
+            label="Căn cước công dân"
+            value={identity}
+            onChange={(e) => setIdentity(e.target.value)}
             fullWidth
             margin="normal"
           />
         </Box>
-        <br />
         <ThemeProvider theme={theme}>
-          <Button variant="contained" onClick={handleSaveChanges}>
+          <Button variant="contained" onClick={handleEditResident}>
             Lưu
           </Button>
         </ThemeProvider>
