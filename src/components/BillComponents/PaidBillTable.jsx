@@ -4,9 +4,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import TablePagination from '@mui/material/TablePagination';
 import PaymentIcon from '@mui/icons-material/Payment';
-import apartmentApi from '../../api/apartmentApi';
 import billApi from '../../api/billApi';
 import PayModal from './modals/PayModal';
+import BillDetailModal from './modals/BillDetailModal';
 
 const columns = [
   { id: 'title', label: 'Tiều đề' },
@@ -164,6 +164,8 @@ export default function PadBillTable({ rows, resetDataOnDelete, handlePayBill })
       
 
       <PayModal isOpen={payModalOpen} totalAmount={loanPayment} onClose={() => setpayModalOpen(false)} onSubmit={hanlePayConfirm}/>
+      <BillDetailModal open={editModalOpen} billData={selectedRowData} onClose={() => setEditModalOpen(false)}/>
+
       <TablePagination
         rowsPerPageOptions={[rowsPerPage]}
         component="div"

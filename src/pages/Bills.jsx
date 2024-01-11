@@ -94,6 +94,7 @@ export default function Bills() {
           total: infoObject.total,
           paid: infoObject.paid,
           loan: infoObject.loan,
+          services: infoObject.list_service
         };
       });
 

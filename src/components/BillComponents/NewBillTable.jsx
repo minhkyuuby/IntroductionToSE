@@ -6,6 +6,7 @@ import TablePagination from '@mui/material/TablePagination';
 import PaymentIcon from '@mui/icons-material/Payment';
 import billApi from '../../api/billApi';
 import PayModal from './modals/PayModal';
+import BillDetailModal from './modals/BillDetailModal';
 
 const columns = [
   { id: 'title', label: 'Tiều đề' },
@@ -159,6 +160,8 @@ export default function NewBillTable({ rows, resetDataOnDelete, handlePayBill })
       
 
       <PayModal isOpen={payModalOpen} totalAmount={totalPayment} onClose={() => setpayModalOpen(false)} onSubmit={hanlePayConfirm}/>
+      <BillDetailModal open={editModalOpen} billData={selectedRowData} onClose={() => setEditModalOpen(false)}/>
+
       <TablePagination
         rowsPerPageOptions={[rowsPerPage]}
         component="div"

@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import TablePagination from '@mui/material/TablePagination';
 import billApi from '../../api/billApi';
-import PayModal from './modals/PayModal';
+import BillDetailModal from './modals/BillDetailModal';
 
 const columns = [
   { id: 'title', label: 'Tiều đề' },
@@ -145,6 +145,8 @@ export default function CompletedBillTable({ rows, resetDataOnDelete }) {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <BillDetailModal open={editModalOpen} billData={selectedRowData} onClose={() => setEditModalOpen(false)}/>
       
       <TablePagination
         rowsPerPageOptions={[rowsPerPage]}
