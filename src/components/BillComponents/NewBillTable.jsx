@@ -71,7 +71,6 @@ export default function NewBillTable({ rows, resetDataOnDelete, handlePayBill })
 
   useEffect(() => {
     // Bất cứ thay đổi nào trong rows sẽ kích hoạt lại hàm này
-    console.log("Rows changed:", rows);
   }, [rows]);
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
