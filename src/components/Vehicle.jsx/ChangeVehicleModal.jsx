@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Box, Typography, Button, TextField, Select, MenuItem } from '@mui/material';
+import apartmentApi from '../../api/apartmentApi';
 
 const style = {
   position: 'absolute',
@@ -14,20 +15,43 @@ const style = {
 };
 
 export default function ChangeVehicleModal({ open, handleClose, handleChangeVehicle }) {
-  const [vehicleRoom, setVehicleRoom] = useState('');
-  const [vehicleId, setVehicleId] = useState('');
+  const [apartmentId, setApartmentId] = useState('');
+  const [apartmentName, setApartmentName] = useState('');
+  const [vehicleId, setVehicleId] = useState('bike');
   const [vehicleName, setVehicleName] = useState('');
+  const [apartments, setApartments] = useState([{id:'323', name: 's'}]);
 
+  useEffect(() => {
+    if(!open) return;
+    apartmentApi.getAllApartments().then((res) => {
+      setApartments(res)
+      console.log("set apartments")
+    })
+  }, [open])
 
   const resetFields = () => {
-    setVehicleRoom('');
+    setApartmentId('');
     setVehicleName('');
-    setVehicleId('');
+    setVehicleId('bike');
     handleClose();
   };
 
+  const handleOnchangeApartment = (apartmentId) => {
+    setApartmentId(apartmentId); 
+    setApartmentName(apartments.find((a) => a.id === apartmentId).name)
+
+  }
+
   const handleChangeVehicleModal = () => {
-    const newVehicle = { vehicleRoom,vehicleName,vehicleId };
+    const newVehicle = {
+      id_apartment: apartmentId,
+      name: vehicleName,
+      info: {
+        note: vehicleId,
+        apartment_name: apartmentName
+      }
+    };
+    console.log(newVehicle)
     handleChangeVehicle(newVehicle);
     resetFields();
     handleClose();
@@ -44,13 +68,23 @@ export default function ChangeVehicleModal({ open, handleClose, handleChangeVehi
           Thêm xe
         </Typography>
         <Box>
-        <TextField
-            label="Tên phòng sở hưu xe "
-            value={vehicleRoom}
-            onChange={(e) => setVehicleRoom(e.target.value)}
+        <Typography variant="subtitle1" gutterBottom>
+            Căn hộ chủ xe
+          </Typography>
+        <Select
+            value={apartmentId}
+            onChange={(e) => handleOnchangeApartment(e.target.value)}
             fullWidth
-            margin="normal"
-          />
+            displayEmpty
+            inputProps={{ 'aria-label': 'Without label' }}
+          > 
+            {
+              apartments.map((item) =>
+                <MenuItem value={item.id} key={item.name}>{item.name}</MenuItem>
+              )
+            }
+          </Select>
+          
           <TextField
             label="Tên xe "
             value={vehicleName}
@@ -62,21 +96,20 @@ export default function ChangeVehicleModal({ open, handleClose, handleChangeVehi
             Loại xe 
           </Typography>
           <Select
-            value={vehicleName}
+            value={vehicleId}
             onChange={(e) => setVehicleId(e.target.value)}
             fullWidth
             displayEmpty
             inputProps={{ 'aria-label': 'Without label' }}
             margin="normal"
           >
-            <MenuItem value="">Chọn loại xe </MenuItem>
-            <MenuItem value="Xe đạp">Xe đạp </MenuItem>
-            <MenuItem value="Xe máy">Xe máy  </MenuItem>
-            <MenuItem value="Xe ô tô">Xe ô tô </MenuItem>
+            <MenuItem value="bike">Xe đạp </MenuItem>
+            <MenuItem value="moto">Xe máy  </MenuItem>
+            <MenuItem value="car">Xe ô tô </MenuItem>
           </Select>
         </Box>
         <br />
-        <Button variant="contained" onClick={() => handleChangeVehicleModal({ vehicleRoom,vehicleName,vehicleId})}>
+        <Button variant="contained" onClick={() => handleChangeVehicleModal()}>
           Thêm thông tin
         </Button>
       </Box>

@@ -119,9 +119,18 @@ export default function AddServiceModal({ open, handleClose, handleAddService })
           </Select>
         </Box>
         <br/>
-        <Button  variant="contained" onClick={() => handleAddServiceModal({ serviceName, status, description, price, unit })}>
+        <Button style={{marginRight: 10}} variant="contained" onClick={() => handleAddServiceModal({ serviceName, status, description, price, unit })}>
            Thêm thông tin
         </Button>
+        <Button sx={{
+            backgroundColor: '#E8E8E8',
+            color: '#2E2E2E',
+            '&:hover': {
+              backgroundColor: '#DCDCDC',
+            },
+          }} onClick={() => {resetFields(); handleClose()}}>
+            Hủy
+          </Button>
       </Box>
     </Modal>
   );

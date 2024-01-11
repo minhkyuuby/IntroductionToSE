@@ -14,9 +14,9 @@ const billApi = {
         )
     },
 
-    updateBill: (billId) => {
+    updateBill: (billId, params) => {
         const url = `/bill/${billId}`
-        return axiosClient.put(url)
+        return axiosClient.put(url, params)
     },
 
     deleteBill: (billId) => {

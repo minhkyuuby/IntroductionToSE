@@ -10,6 +10,12 @@ const serviceApi = {
         return axiosClient.post(url,
             params
         )
+    },
+    updateService: (id, params) => {
+        const url=`/service/${id}`;
+        return axiosClient.put(url,
+            params
+        )
     }
 }
 

@@ -3,15 +3,14 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import TablePagination from '@mui/material/TablePagination';
-import PaymentIcon from '@mui/icons-material/Payment';
 import billApi from '../../api/billApi';
 import PayModal from './modals/PayModal';
 
 const columns = [
   { id: 'title', label: 'Tiều đề' },
   { id: 'roomName', label: 'Tên phòng' },
-  { id: 'time_create', label: 'Tạo lúc' },
   { id: 'total', label: 'Tổng cộng tiền (nghìn đồng)' },
+  { id: 'paid', label: 'Đã thanh toán' },
   { id: 'actions', label: 'hoạt động' }, 
 ];
 
@@ -20,10 +19,9 @@ const cellStyle = {
   verticalAlign: 'middle',
 };
 
-export default function NewBillTable({ rows, resetDataOnDelete, handlePayBill }) {
+export default function CompletedBillTable({ rows, resetDataOnDelete }) {
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [payModalOpen, setpayModalOpen] = useState(false);
-  const [totalPayment, setTotalPayment] = useState(0);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [page, setPage] = useState(0);
@@ -36,15 +34,8 @@ export default function NewBillTable({ rows, resetDataOnDelete, handlePayBill })
 
   const handlePayClick = (rowIndex) => {
     setSelectedRow(rowIndex);
-    setTotalPayment(rows[rowIndex].total)
     setpayModalOpen(true)
   }
-
-  const hanlePayConfirm = (payAmount, loanNumber) => {
-    const billIdToDelete = rows[selectedRow].id;
-    
-    handlePayBill(billIdToDelete, payAmount, loanNumber)
-  };
 
   const handleDeleteConfirm = () => {
     const billIdToDelete = rows[selectedRow].id;
@@ -93,9 +84,6 @@ export default function NewBillTable({ rows, resetDataOnDelete, handlePayBill })
                 <TableCell key={column.id} style={cellStyle}>
                   {column.id === 'actions' ? (
                     <>
-                      <IconButton aria-label="pay" size="small" onClick={() => handlePayClick(rowIndex)} style={{ color: 'green' }}>
-                       <PaymentIcon fontSize="small" />
-                      </IconButton>
                       <IconButton aria-label="edit" size="small" onClick={() => handleEditClick(rowIndex)}>
                         <InfoIcon fontSize="small" />
                       </IconButton>
@@ -158,8 +146,6 @@ export default function NewBillTable({ rows, resetDataOnDelete, handlePayBill })
         </DialogActions>
       </Dialog>
       
-
-      <PayModal isOpen={payModalOpen} totalAmount={totalPayment} onClose={() => setpayModalOpen(false)} onSubmit={hanlePayConfirm}/>
       <TablePagination
         rowsPerPageOptions={[rowsPerPage]}
         component="div"
