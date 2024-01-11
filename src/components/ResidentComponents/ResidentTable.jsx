@@ -7,9 +7,9 @@ import EditResidentModal from './EditResidentModal';
 
 const columns = [
   { id: 'residentId', label: 'Mã cư dân' },
-  { id: 'nameResident', label: 'Họ tên' },
+  { id: 'fullname', label: 'Họ tên' },
   { id: 'birthdayResident', label: 'Ngày sinh' },
-  { id: 'citizenshipResidentId', label: 'Căn cước công dân ' },
+  { id: 'identity', label: 'Căn cước công dân ' },
   { id: 'actions', label: 'Xóa' }, // New column for the delete button
 ]
 const cellStyle = {
@@ -29,6 +29,7 @@ export default function ResidentTable({ rows, setRows }) {
     setRows(updatedRows);
     setEditModalOpen(false);
   };
+  
   const handleDeleteClick = (rowIndex) => {
     setSelectedRow(rowIndex);
     setDeleteConfirmationOpen(true);

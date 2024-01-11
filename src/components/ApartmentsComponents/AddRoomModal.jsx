@@ -39,6 +39,16 @@ export default function AddRoomModal({ open, handleClose,handleAddRoom }) {
     handleClose();
   };
 
+  const handleChangeNumberField = (event) => {
+    let value = event.target.value;
+
+    // Check if the input is a positive number
+    value = value.replace(/[^0-9]/g, '').replace(/^0+/, '');
+    setArea(Number(value));
+    // If not a positive number, you can handle it in different ways,
+    // such as showing an error message or preventing further input.
+  };
+
   const handleAddRoomModal = () => {
     const info = { status, area };
     const newRoom = { name: roomName, info };
@@ -84,7 +94,7 @@ export default function AddRoomModal({ open, handleClose,handleAddRoom }) {
           <TextField
             label="Diện tích"
             value={area}
-            onChange={(e) => setArea(e.target.value)}
+            onChange={handleChangeNumberField}
             fullWidth
             margin="normal"
           />

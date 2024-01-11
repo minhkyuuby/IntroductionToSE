@@ -35,24 +35,29 @@ const theme = createTheme({
 
 export default function AddResidentModal({ open, handleClose, handleAddResident, setRows }) {
   const [residentId, setResidentId] = useState('');
-  const [nameResident, setNameResident] = useState('');
+  const [fullname, setFullName] = useState('');
   const [birthdayResident, setBirthdayResident] = useState(null);
-  const [citizenshipResidentId, setCitizenshipResidentId] = useState('');
-
+  const [identity, setIdentity] = useState('');
 
   const resetFields = () => {
     setResidentId('');
-    setNameResident('');
+    setFullName('');
     setBirthdayResident(null);
-    setCitizenshipResidentId('');
+    setIdentity('');
+    handleClose();
   };
 
   const handleAddResidentModal = () => {
     const formattedBirthday = birthdayResident ? birthdayResident.format('YYYY-MM-DD') : ''
-    const newResident = { residentId, nameResident, birthdayResident: formattedBirthday, citizenshipResidentId };
+    const newResident = { 
+      residentId: residentId, 
+      fullname, 
+      birthdayResident: formattedBirthday, 
+      identity 
+    };
+    // console.log("create new resident here!")
+    // console.log(newResident)
     handleAddResident(newResident);
-    // Cập nhật rows thông qua setRows được truyền từ Residents
-    // setRows(prevRows => [...prevRows, newResident]);
     resetFields();
     handleClose();
   };
@@ -77,8 +82,8 @@ export default function AddResidentModal({ open, handleClose, handleAddResident,
           />
           <TextField
             label="Họ tên"
-            value={nameResident}
-            onChange={(e) => setNameResident(e.target.value)}
+            value={fullname}
+            onChange={(e) => setFullName(e.target.value)}
             fullWidth
             margin="normal"
           />
@@ -103,15 +108,15 @@ export default function AddResidentModal({ open, handleClose, handleAddResident,
           /> */}
           <TextField
             label="Căn cước công dân "
-            value={citizenshipResidentId}
-            onChange={(e) => setCitizenshipResidentId(e.target.value)}
+            value={identity}
+            onChange={(e) => setIdentity(e.target.value)}
             fullWidth
             margin="normal"
           />
         </Box>
         <br />
         <ThemeProvider theme={theme}>
-          <Button variant="contained" onClick={() => handleAddResidentModal({ residentId, nameResident, birthdayResident, citizenshipResidentId })}>
+          <Button variant="contained" onClick={() => handleAddResidentModal()}>
             Thêm thông tin
           </Button>
         </ThemeProvider>

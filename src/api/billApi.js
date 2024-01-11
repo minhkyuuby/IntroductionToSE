@@ -1,14 +1,14 @@
 import axiosClient from "./AxiosClient.js";
 
-const apartmentApi = {
-    getAllApartments: () => {
-        const url="/apartments";
+const billApi = {
+    getAllBills: () => {
+        const url="/bills";
         return axiosClient.get(url)
     },
 
-    createNewRoom: (params) => {
+    createNewBill: (params) => {
         console.log(params)
-        const url="/apartment";
+        const url="/bill";
         return axiosClient.post(url,
             params
         )
