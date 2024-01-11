@@ -18,15 +18,20 @@ const residentApi = {
 
     deleteResident: (residentID) => {
         console.log(residentID)
-        console.log(residentID)
-        const url = `/apartment/${residentID}`;
+        const url = `/people/${residentID}`;
         return axiosClient.delete(url)
     },
 
     editResident: (residentID, updatedResidentData) => {
-        const url = `/apartment/${residentID}`;
+        const url = `/people/${residentID}`;
         return axiosClient.put(url, updatedResidentData);
-      }      
+    },
+    
+    getPeopleApartments: (residentID) => {
+        console.log(residentID)
+        const url = `/people/${residentID}/apartments`
+        return axiosClient.get(url);
+    }
 }
 
 export default residentApi;
