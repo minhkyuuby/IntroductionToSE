@@ -2,16 +2,22 @@ import './App.css';
 import { useRoutes } from "react-router-dom";
 import Login from './pages/authentication/login.jsx';
 import Services from './pages/Services.jsx';
-import Dashboard from './pages/Dashboard.jsx';
+import Dashboard from './pages/dashboard.jsx';
 import Residents from './pages/Residents.jsx';
 import Bills from './pages/Bills.jsx';
 import Apartments from './pages/Apartments.jsx';
 import Vehicles from './pages/Vehicles.jsx';
 import TemporaryResidence from './pages/TemporaryResidence.jsx';
 import TemporaryLeave from './pages/TemporaryLeave.jsx';
+import UserProfile from './pages/UserProfile.jsx';
+// import { Dashboard } from '@mui/icons-material';
 
 function App() {
   let element = useRoutes([
+    {
+      path: "/profile",
+      element: <UserProfile />,
+    },
     {
       path: "*",
       element: <Login />,
