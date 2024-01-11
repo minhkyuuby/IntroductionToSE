@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Box, Typography, Button, TextField, Select, MenuItem } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import apartmentApi from '../../api/apartmentApi';
 
 const style = {
     position: 'absolute',
@@ -32,29 +33,44 @@ const style = {
     const [roomName, setRoomName] = useState('');
     const [status, setStatus] = useState('');
     const [area, setArea] = useState('');
-    const [numResidents, setNumResidents] = useState('');
   
     useEffect(() => {
       if (selectedRow) {
-        setRoomName(selectedRow.roomName);
-        setStatus(selectedRow.status);
+        setRoomName(selectedRow.name);
+        setStatus(selectedRow.status === "Đang hoạt động" ? "Đang hoạt động" : "Không hoạt động");
         setArea(selectedRow.area);
-        setNumResidents(selectedRow.numResidents);
       }
     }, [selectedRow]);
   
-    const handleSaveChanges = () => {
-      const updatedRow = { ...selectedRow, roomName, status, area, numResidents };
-      setRows(prevRows => {
-        const rowIndex = prevRows.findIndex(row => row === selectedRow);
-        if (rowIndex !== -1) {
-          const updatedRows = [...prevRows];
-          updatedRows[rowIndex] = updatedRow;
-          return updatedRows;
-        }
-        return prevRows;
-      });
-      handleClose();
+    const handleEditRoom = () => {
+      const updatedRoomData = {
+        name: roomName,
+        status: status === "Đang hoạt động" ? 0 : 1,
+        area: parseInt(area), 
+      };
+  
+      apartmentApi.editRoom(selectedRow.id, updatedRoomData)
+        .then(() => {
+          return apartmentApi.getAllApartments();
+        })
+        .then(response => {
+          const updatedRooms = response.map(item => {
+            const infoObject = JSON.parse(item.info);
+            return {
+              id: item.id,
+              name: item.name,
+              status: infoObject.status === 0 ? "Đang hoạt động" : "Không hoạt động",
+              area: infoObject.area,
+            };
+          });
+          setRows(updatedRooms);
+        })
+        .catch(error => {
+          console.error("Error editing room or fetching updated rooms:", error);
+        })
+        .finally(() => {
+          handleClose();
+        });
     };
 
   return (
@@ -80,24 +96,16 @@ const style = {
             Trạng thái
           </Typography>
           <Select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            value={status === 0 ? 'Đang hoạt động' : 'Không hoạt động'}
+            onChange={(e) => setStatus(e.target.value === 'Đang hoạt động' ? 0 : 1)}
             fullWidth
             displayEmpty
             inputProps={{ 'aria-label': 'Without label' }}
-            margin="normal"
+            // margin="normal"
           >
-            <MenuItem value="">Chọn trạng thái</MenuItem>
             <MenuItem value="Đang hoạt động">Đang hoạt động</MenuItem>
-            <MenuItem value="Ngừng hoạt động">Ngừng hoạt động</MenuItem>
+            <MenuItem value="Không hoạt động">Không hoạt động</MenuItem>
           </Select>
-          <TextField
-            label="Số người"
-            value={numResidents}
-            onChange={(e) => setNumResidents(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
           <TextField
             label="Diện tích"
             value={area}
@@ -107,7 +115,7 @@ const style = {
           />
         </Box>
         <ThemeProvider theme={theme}> 
-            <Button variant="contained" onClick={handleSaveChanges}>
+            <Button variant="contained" onClick={handleEditRoom}>
             Lưu 
             </Button>
         </ThemeProvider>
