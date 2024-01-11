@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Container, Button ,Box,Typography} from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
-import RoomTable from '../components/ApartmentsComponents/RoomTable';
-import AddRoomModal from '../components/ApartmentsComponents/AddRoomModal';
-import apartmentApi from '../api/apartmentApi.js';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -33,7 +30,10 @@ const theme = createTheme({
 
 export default function Bills() {
   const [openModal, setOpenModal] = useState(false);
+  const [bills, setBills] = useState(initialRows);
   const [rows, setRows] = useState(initialRows);
+  const [rows2, setRows2] = useState(initialRows);
+  const [rows3, setRows3] = useState(initialRows);
   const [rooms, setRooms] = useState([]);
   const [tab, setTab] = React.useState('1');
 
@@ -43,6 +43,58 @@ export default function Bills() {
 
     useEffect(() => {
 
+    billApi.getAllBills().then(response => {
+      setBills(response);
+      const bills = response.map(item => {
+        // Parse chuỗi JSON từ trường 'info'
+        const infoObject = JSON.parse(item.info);
+      
+        return {
+          id: item.id,
+          id_apartment: item.id_apartment,
+          title: infoObject.title,
+          roomName: infoObject.note,
+          time_create: item.time_create,
+          total: infoObject.total,
+          paid: infoObject.paid,
+          loan: infoObject.loan,
+        };
+      });
+
+      const newBills = []
+      const paidApartBills = []
+      const completedBills = []
+      bills.forEach((b) => {
+        if(b.paid === 0) {
+          newBills.push(b);
+        } else if(b.paid < b.total) {
+          paidApartBills.push(b)
+        } else {
+          completedBills.push(b)
+        }
+      })
+
+      setRows(newBills);
+      setRows2(paidApartBills);
+      setRows3(completedBills);
+
+    }).catch(() => {
+        setRows(initialRows)
+    })
+  }, []);
+
+  // modal methods
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  // feature
+  const resetDataOnDelete = () => {
     billApi.getAllBills().then(response => {
 
       const bills = response.map(item => {
@@ -54,25 +106,21 @@ export default function Bills() {
           id_apartment: item.id_apartment,
           title: infoObject.title,
           roomName: infoObject.note,
-          time_create: item.time_create
+          time_create: item.time_create,
+          total: infoObject.total
         };
       });
 
-      setRows(bills);
 
+
+      setRows(bills);
+      setRows2(bills);
+      setRows3(bills);
 
     }).catch(() => {
         setRows(initialRows)
     })
-  }, []);
-
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
+  }
 
   return (
     <Layout page='Bill'>
@@ -119,7 +167,7 @@ export default function Bills() {
         <SelectRoomBillModal open={openModal} handleClose={handleCloseModal} />
       </Box>
       <hr />
-      <NewBillTable rows={rows} setRows={setRows} />
+      <NewBillTable rows={rows} setRows={setRows} resetDataOnDelete={resetDataOnDelete}/>
         </TabPanel>
         <TabPanel value="2">Thanh toán một phần</TabPanel>
         <TabPanel value="3">Đã thanh toán</TabPanel>

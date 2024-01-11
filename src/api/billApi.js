@@ -14,16 +14,19 @@ const billApi = {
         )
     },
 
-    deleteRoom: (roomId) => {
-        console.log(roomId)
-        console.log(roomId)
-        const url = `/apartment/${roomId}`;
+    updateBill: (billId) => {
+        const url = `/bill/${billId}`
+        return axiosClient.put(url)
+    },
+
+    deleteBill: (billId) => {
+        const url = `/bill/${billId}`;
         return axiosClient.delete(url)
     },
 
-    editRoom: (roomId, updatedRoomData) => {
-        const url = `/apartment/${roomId}`;
-        return axiosClient.put(url, updatedRoomData);
+    getBilldetails: (billId) => {
+        const url = `/bill/${billId}`;
+        return axiosClient.get(url);
       }      
 }
 

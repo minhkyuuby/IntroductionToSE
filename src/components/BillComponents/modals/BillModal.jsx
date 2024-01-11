@@ -12,7 +12,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
 import ServiceCard from '../cards/ServiceCard';
-import serviceApi from "../../../api/serviceApi"
+import serviceApi from "../../../api/serviceApi";
 
 import billApi from '../../../api/billApi';
 
@@ -112,7 +112,7 @@ export default function BillModal({ open, onClose, roomData }) {
   const handleSubmit = () => {
     // Add your logic to handle the submitted bill information
     const createDate = dayjs(billInfo.createDate)
-    const formatteddate = createDate ? createDate.format('YYYY-MM-DD') : ''
+    const formatteddate = createDate ? createDate.format('YYYY-MM-DD HH:mm:ss') : ''
 
     
 
@@ -123,9 +123,12 @@ export default function BillModal({ open, onClose, roomData }) {
       info: {
         title: billInfo.title,
         list_service: selectedServices,
-        note: roomData.name
+        note: roomData.name,
+        total: billInfo.total,
+        paid: 0,
+        loan: null,
       },
-      timeCreated: formatteddate,
+      time_create: formatteddate,
       
     }
     
