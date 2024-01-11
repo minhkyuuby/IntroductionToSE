@@ -34,6 +34,9 @@ export default function SelectRoomBillModal({ open, handleClose }) {
   const [apartments, setApartments] = useState([]);
   const [openBill, setOpenBill] = useState(false);
 
+  // room data
+  const [room, setRoom] = useState({});
+
   useEffect(() => {
     apartmentApi.getAllApartments().then(response => {
 
@@ -44,6 +47,7 @@ export default function SelectRoomBillModal({ open, handleClose }) {
         return {
           id: item.id,
           name: item.name,
+          area: infoObject.area | 0,
           status: infoObject.status === 0 ? "Đang hoạt động" : "Không hoạt động",
           active: infoObject.status === 0,
         };
@@ -56,10 +60,11 @@ export default function SelectRoomBillModal({ open, handleClose }) {
     })
   }, []);
 
-  const handleCardClick = (cardId, isActive) => {
+  const handleCardClick = (card, isActive) => {
     if(!isActive) return;
     // Add your logic for handling card click, e.g., navigate to a different page
-    console.log(`Clicked on card with id ${cardId}`);
+    console.log(`Clicked on card with id ${card.id}`);
+    setRoom(card)
     setOpenBill(true);
   };
 
@@ -86,7 +91,7 @@ export default function SelectRoomBillModal({ open, handleClose }) {
               <Card
                 variant="outlined"
                 sx={{ borderColor: card.active ? 'green' : 'red', cursor: 'pointer' }}
-                onClick={() => handleCardClick(card.id, card.active)}
+                onClick={() => handleCardClick(card, card.active)}
               >
                 <CardContent>
                     {card.name}
@@ -110,7 +115,7 @@ export default function SelectRoomBillModal({ open, handleClose }) {
       </Box>
       
     </Modal>
-    <BillModal open={openBill} onClose={handleCloseBillModal}></BillModal>
+    <BillModal open={openBill} onClose={handleCloseBillModal} roomData={room}></BillModal>
     </>
   );
 }

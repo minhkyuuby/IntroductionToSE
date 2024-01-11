@@ -11,10 +11,13 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Layout from './lyaout/Layout.jsx';
 import SelectRoomBillModal from '../components/BillComponents/modals/SelectRoomBillModal.jsx';
+import NewBillTable from '../components/BillComponents/NewBillTable.jsx';
+import billApi from '../api/billApi.js';
 
 const initialRows = [
   // Initial data for the table
 ];
+
 const theme = createTheme({
   palette: {
     mode: 'light',
@@ -31,29 +34,31 @@ const theme = createTheme({
 export default function Bills() {
   const [openModal, setOpenModal] = useState(false);
   const [rows, setRows] = useState(initialRows);
+  const [rooms, setRooms] = useState([]);
   const [tab, setTab] = React.useState('1');
 
   const handleChangeTab = (event, newValue) => {
     setTab(newValue);
   };
 
+    useEffect(() => {
 
-  useEffect(() => {
-    apartmentApi.getAllApartments().then(response => {
+    billApi.getAllBills().then(response => {
 
-      const rooms = response.map(item => {
+      const bills = response.map(item => {
         // Parse chuỗi JSON từ trường 'info'
         const infoObject = JSON.parse(item.info);
       
         return {
           id: item.id,
-          name: item.name,
-          status: infoObject.status === 0? "Đang hoạt động" : "Không hoạt động",
-          area: infoObject.area,
+          id_apartment: item.id_apartment,
+          title: infoObject.title,
+          roomName: infoObject.note,
+          time_create: item.time_create
         };
       });
 
-      setRows(rooms);
+      setRows(bills);
 
 
     }).catch(() => {
@@ -67,33 +72,6 @@ export default function Bills() {
 
   const handleCloseModal = () => {
     setOpenModal(false);
-  };
-
-  // Function to add a new service row to the table
-  const handleAddRoom = (newRoom) => {
-    apartmentApi.createNewRoom(newRoom).then(()=> {
-      
-      //re fresh lại bảng 
-      apartmentApi.getAllApartments().then(response => {
-
-        const rooms = response.map(item => {
-          // Parse chuỗi JSON từ trường 'info'
-          const infoObject = JSON.parse(item.info);
-        
-          return {
-            id: item.id,
-            name: item.name,
-            status: infoObject.status === 0? "Đang hoạt động" : "Không hoạt động",
-            area: infoObject.area,
-          };
-        });
-  
-        setRows(rooms);
-      })
-
-    }).catch((e) => {
-      console.log("Thông báo cái gì đó ở đây là không tạo được bill!");
-    })
   };
 
   return (
@@ -138,10 +116,10 @@ export default function Bills() {
               Tạo phiếu thu
             </Button>
         </ThemeProvider>
-        <SelectRoomBillModal open={openModal} handleClose={handleCloseModal} handleAddRoom={handleAddRoom} />
+        <SelectRoomBillModal open={openModal} handleClose={handleCloseModal} />
       </Box>
       <hr />
-      <RoomTable rows={rows} setRows={setRows} />
+      <NewBillTable rows={rows} setRows={setRows} />
         </TabPanel>
         <TabPanel value="2">Thanh toán một phần</TabPanel>
         <TabPanel value="3">Đã thanh toán</TabPanel>

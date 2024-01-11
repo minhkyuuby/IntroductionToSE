@@ -27,4 +27,4 @@ const billApi = {
       }      
 }
 
-export default apartmentApi;
+export default billApi;
