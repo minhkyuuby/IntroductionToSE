@@ -43,10 +43,7 @@ export default function Residents() {
         };
       });
 
-      console.log(residents)
-
       setRows(residents);
-
 
     }).catch(() => {
         setRows(initialRows)
@@ -63,8 +60,6 @@ export default function Residents() {
 
   // Function to add a new Resident row to the table
   const handleAddResident = (newResident) => {
-    console.log('handle add here')
-    console.log(newResident.residentId)
     const requestBody = {
       info: {
         fullname: newResident.fullname,

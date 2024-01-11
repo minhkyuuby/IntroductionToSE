@@ -7,7 +7,6 @@ const apartmentApi = {
     },
 
     createNewRoom: (params) => {
-        console.log(params)
         const url="/apartment";
         return axiosClient.post(url,
             params
@@ -15,8 +14,6 @@ const apartmentApi = {
     },
 
     deleteRoom: (roomId) => {
-        console.log(roomId)
-        console.log(roomId)
         const url = `/apartment/${roomId}`;
         return axiosClient.delete(url)
     },
