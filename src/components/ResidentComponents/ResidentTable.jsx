@@ -2,15 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, DialogContentText, DialogContent, DialogTitle, Dialog, DialogActions, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import AddHomeIcon from '@mui/icons-material/AddHome';
 import TablePagination from '@mui/material/TablePagination';
 import EditResidentModal from './EditResidentModal';
+import residentApi from '../../api/residentApi';
+import AddRoomForResidentModal from './AddRoomForResidentModal';
 
 const columns = [
   { id: 'residentId', label: 'Mã cư dân' },
   { id: 'fullname', label: 'Họ tên' },
   { id: 'birthdayResident', label: 'Ngày sinh' },
   { id: 'identity', label: 'Căn cước công dân ' },
-  { id: 'actions', label: 'Xóa' }, // New column for the delete button
+  { id: 'room', label: 'Phòng' },
+  { id: 'actions', label: 'Thao tác' }, 
 ]
 const cellStyle = {
   textAlign: 'center',
@@ -21,6 +25,7 @@ export default function ResidentTable({ rows, setRows }) {
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [addRoomModalOpen, setAddRoomModalOpen] = useState(false);
   const [page, setPage] = useState(0);
   const rowsPerPage = 5; // Set the default rows per page to 5
 
@@ -36,10 +41,38 @@ export default function ResidentTable({ rows, setRows }) {
   };
 
   const handleDeleteConfirm = () => {
-    const newRows = [...rows];
-    newRows.splice(selectedRow, 1);
-    setRows(newRows);
-    setDeleteConfirmationOpen(false);
+    const roomIdToDelete = rows[selectedRow].id; 
+  
+    // Call the API to delete the room with the obtained ID
+    residentApi.deleteResident(roomIdToDelete)
+      .then(() => {
+        // If the deletion is successful, update the UI by fetching updated room data
+        return residentApi.getAllResidents();
+      })
+      .then(response => {
+        // Map the response to format it for the table
+        const updatedResidents = response.map(item => {
+          const infoObject = JSON.parse(item.info);
+          return {
+            id: item.id,
+            fullname: infoObject.fullname,
+            phone_number: infoObject.phone_number,
+            identity: infoObject.cccd,
+            birthdayResident: infoObject.birthdayResident, 
+            residentId: infoObject.residentId,
+          };
+        });
+        // Update the state with the updated room data
+        setRows(updatedResidents);
+      })
+      .catch((error) => {
+        // Handle any errors that occur during the API call
+        console.error("Error deleting room or fetching updated rooms:", error);
+      })
+      .finally(() => {
+        // Close the delete confirmation dialog
+        setDeleteConfirmationOpen(false);
+      });
   };
 
   const handleDeleteCancel = () => {
@@ -50,6 +83,11 @@ export default function ResidentTable({ rows, setRows }) {
   const handleEditClick = (rowIndex) => {
     setSelectedRow(rowIndex);
     setEditModalOpen(true);
+  };
+
+  const handleRoomButtonClick = (rowIndex) => {
+    setSelectedRow(rowIndex);
+    setAddRoomModalOpen(true); 
   };
 
   useEffect(() => {
@@ -74,16 +112,22 @@ export default function ResidentTable({ rows, setRows }) {
                 <TableCell key={column.id} style={cellStyle}>
                   {column.id === 'actions' ? (
                     <>
-                      <IconButton aria-label="edit" size="small" onClick={() => handleEditClick(row)}>
+                      <IconButton aria-label="edit" size="small" onClick={() => handleEditClick(rowIndex)}>
                         <EditIcon fontSize="small" />
                       </IconButton>
                       <IconButton aria-label="delete" size="small" onClick={() => handleDeleteClick(rowIndex)} style={{ color: '#f23a3a' }}>
                         <DeleteIcon fontSize="small" />
                       </IconButton>
                     </>
+                  ) : column.id === 'room' ? (
+                    <IconButton aria-label='addroom' size='small' onClick={() => handleRoomButtonClick(rowIndex)}>
+                      <AddHomeIcon fontSize='small' />
+                    </IconButton>
+                    
                   ) : (
                     row[column.id]
                   )}
+                  
                 </TableCell>
               ))}
             </TableRow>
@@ -91,7 +135,7 @@ export default function ResidentTable({ rows, setRows }) {
           {/* Thêm hàng trống vào cuối bảng */}
           {emptyRows > 0 && (
             <TableRow style={{ height: 62.67 * emptyRows }}>
-              <TableCell colSpan={5} />
+              <TableCell colSpan={columns.length} />
             </TableRow>
           )}
         </TableBody>
@@ -148,6 +192,11 @@ export default function ResidentTable({ rows, setRows }) {
         handleClose={() => setEditModalOpen(false)}
         selectedRow={selectedRow}
         handleUpdateRow={handleUpdateRow} // Truyền hàm handleUpdateRow ở đây
+      />
+      <AddRoomForResidentModal
+          open={addRoomModalOpen}
+          handleClose={() => setAddRoomModalOpen(false)}
+          residentId={rows[selectedRow]?.id}
       />
     </TableContainer>
 
