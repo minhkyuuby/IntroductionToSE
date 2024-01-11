@@ -39,6 +39,7 @@ export default function BillModal({ open, onClose, roomData }) {
 
   // use Effect ***************
   useEffect(() => {
+    if(!open) return;
     serviceApi.getAllServices().then((res) => {
       const services = res.map((service) => {
         const infoObject = JSON.parse(service.info);

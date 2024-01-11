@@ -38,6 +38,7 @@ export default function SelectRoomBillModal({ open, handleClose }) {
   const [room, setRoom] = useState({});
 
   useEffect(() => {
+    if(!open) return;
     apartmentApi.getAllApartments().then(response => {
 
       const rooms = response.map(item => {
@@ -58,7 +59,7 @@ export default function SelectRoomBillModal({ open, handleClose }) {
     }).catch(() => {
 
     })
-  }, []);
+  }, [open]);
 
   const handleCardClick = (card, isActive) => {
     if(!isActive) return;
