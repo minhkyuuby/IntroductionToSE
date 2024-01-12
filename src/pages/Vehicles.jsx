@@ -4,7 +4,7 @@ import ChangeVehicleModal from '../components/Vehicle.jsx/ChangeVehicleModal';
 import VehicleTable from '../components/Vehicle.jsx/VehicleTable';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
-import Layout from './lyaout/Layout';
+import Layout from './layout/Layout';
 import vehicleApi from '../api/vehicleApi';
 const initialRows = [
   // Initial data for the table

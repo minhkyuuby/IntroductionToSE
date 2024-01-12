@@ -4,6 +4,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -11,17 +12,18 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  border: '2px transform #000',
   boxShadow: 24,
   p: 4,
+  borderRadius: 2
 };
 
-export default function AddTemporaryResidenceModal({ open, handleClose, handleAddTemporaryResidence }) {
+export default function AddTemporaryLeaveModal({ open, handleClose, handleAddTemporaryLeave }) {
   const [paperId, setPaperId] = useState('');
   const [residentId, setResidentId] = useState('');
-  const [residentName, setResidentName] = useState('');
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
+  const [fullname, setResidentName] = useState('');
+  const [start, setFromDate] = useState(null);
+  const [end, setToDate] = useState(null);
   const [reason, setReason] = useState('');
 
   const resetFields = () => {
@@ -31,15 +33,16 @@ export default function AddTemporaryResidenceModal({ open, handleClose, handleAd
     setFromDate(null);
     setToDate(null);
     setReason('');
+    handleClose();
   };
 
-  const handleAddTemporaryResidenceModal = () => {
-    const formattedFromDate = fromDate ? fromDate.format('YYYY-MM-DD') : ''
-    const formattedToDate = fromDate ? fromDate.format('YYYY-MM-DD') : ''
-
-
-    const newTemporaryResidence = { paperId, residentId, residentName, fromDate:formattedFromDate, toDate:formattedToDate, reason };
-    handleAddTemporaryResidence(newTemporaryResidence);
+  const handleAddTemporaryLeaveModal = () => {
+    const formattedFromDate = start ? start.format('YYYY-MM-DD') : ''
+    const formattedToDate = end ? end.format('YYYY-MM-DD') : ''
+    const type = 1
+    const newTemporaryLeave = { note: reason, paperId, residentId, fullname, start:formattedFromDate, end:formattedToDate, type };
+    
+    handleAddTemporaryLeave(newTemporaryLeave);
     resetFields();
     handleClose();
   };
@@ -59,12 +62,12 @@ export default function AddTemporaryResidenceModal({ open, handleClose, handleAd
         <Box>
           <TextField label="Mã giấy" value={paperId} onChange={(e) => setPaperId(e.target.value)} fullWidth margin="normal" />
           <TextField label="Mã cư dân" value={residentId} onChange={(e) => setResidentId(e.target.value)} fullWidth margin="normal" />
-          <TextField label="Tên cư dân" value={residentName} onChange={(e) => setResidentName(e.target.value)} fullWidth margin="normal" />
+          <TextField label="Tên cư dân" value={fullname} onChange={(e) => setResidentName(e.target.value)} fullWidth margin="normal" />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DatePicker']}>
               <DatePicker
                 label="Từ khi"
-                value={fromDate}
+                value={start}
                 onChange={(date) => setFromDate(date)}
                 fullWidth
                 margin="normal"
@@ -76,7 +79,7 @@ export default function AddTemporaryResidenceModal({ open, handleClose, handleAd
             <DemoContainer components={['DatePicker']}>
               <DatePicker
                 label="Đến khi"
-                value={toDate}
+                value={end}
                 onChange={(date) => setToDate(date)}
                 fullWidth
                 margin="normal"
@@ -87,7 +90,7 @@ export default function AddTemporaryResidenceModal({ open, handleClose, handleAd
           {/* <TextField label="Đến khi" value={toDate} onChange={(e) => setToDate(e.target.value)} fullWidth margin="normal" /> */}
           <TextField label="Lý do" value={reason} onChange={(e) => setReason(e.target.value)} fullWidth margin="normal" />
         </Box>
-        <Button variant="contained" onClick={handleAddTemporaryResidenceModal}>
+        <Button variant="contained" onClick={handleAddTemporaryLeaveModal}>
           Thêm thông tin
         </Button>
       </Box>

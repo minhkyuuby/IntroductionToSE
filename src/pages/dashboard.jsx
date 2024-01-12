@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles';
 
 import { Typography, Container, Paper, Grid } from '@mui/material';
-import Layout from './lyaout/Layout.jsx';
+import Layout from './layout/Layout.jsx';
 import apartmentApi from '../api/apartmentApi.js';
 import residentApi from '../api/residentApi.js';
 import vehicleApi from '../api/vehicleApi.js';

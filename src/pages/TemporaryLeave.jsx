@@ -5,7 +5,7 @@ import TemporaryLeaveTable from '../components/TemporaryLeaveComponents/Temporar
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import temporaryLeaveAPI from '../api/temporaryLeaveAPI';
-import Layout from './lyaout/Layout.jsx';
+import Layout from './layout/Layout.jsx';
 
 const initialRows = [
   // Initial data for the table
@@ -134,7 +134,6 @@ export default function TemporaryLeave() {
             </Button>
           </ThemeProvider>
           <AddTemporaryLeaveModal open={openModal} handleClose={handleCloseModal} handleAddTemporaryLeave={handleAddTemporaryLeave} />
-
         </Box>
         <hr />
         <TemporaryLeaveTable rows={rows} setRows={setRows}/>

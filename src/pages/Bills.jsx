@@ -6,7 +6,7 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import Layout from './lyaout/Layout.jsx';
+import Layout from './layout/Layout.jsx';
 import SelectRoomBillModal from '../components/BillComponents/modals/SelectRoomBillModal.jsx';
 import NewBillTable from '../components/BillComponents/NewBillTable.jsx';
 import billApi from '../api/billApi.js';

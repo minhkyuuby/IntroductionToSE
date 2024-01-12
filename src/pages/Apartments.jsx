@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RoomTable from '../components/ApartmentsComponents/RoomTable';
 import AddRoomModal from '../components/ApartmentsComponents/AddRoomModal';
 import apartmentApi from '../api/apartmentApi.js';
-import Layout from './lyaout/Layout.jsx';
+import Layout from './layout/Layout.jsx';
 
 const initialRows = [
   // Initial data for the table

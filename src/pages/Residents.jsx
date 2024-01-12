@@ -5,7 +5,7 @@ import ResidentTable from '../components/ResidentComponents/ResidentTable';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import residentAPI from '../api/residentApi';
-import Layout from './lyaout/Layout.jsx';
+import Layout from './layout/Layout.jsx';
 
 const initialRows = [
   // Initial data for the table
