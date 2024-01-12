@@ -10,6 +10,8 @@ import Layout from './lyaout/Layout.jsx';
 import SelectRoomBillModal from '../components/BillComponents/modals/SelectRoomBillModal.jsx';
 import NewBillTable from '../components/BillComponents/NewBillTable.jsx';
 import billApi from '../api/billApi.js';
+import PadBillTable from '../components/BillComponents/PaidBillTable.jsx';
+import CompletedBillTable from '../components/BillComponents/CompletedBillTable.jsx';
 
 const initialRows = [
   // Initial data for the table
@@ -41,8 +43,42 @@ export default function Bills() {
     setTab(newValue);
   };
 
-    useEffect(() => {
+  const handlePayBill = (billId, paymentAmount, loanAmount) => {
+    const billToPay = bills.find((bill) => bill.id === billId)
+    console.log(billToPay)
+    const infoObject = JSON.parse(billToPay.info)
+    const data = {
+      ...billToPay,
+      info: {
+        ...infoObject,
+        paid: paymentAmount,
+        loan: loanAmount
+      }
+    }
+    // console.log(data)
+    billApi.updateBill(billId, data).then(() => {
+      resetData();
+    })
 
+  }
+
+  useEffect(() => {
+      resetData()
+    
+  }, []);
+
+  // modal methods
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  // feature
+  const resetData = () => {
     billApi.getAllBills().then(response => {
       setBills(response);
       const bills = response.map(item => {
@@ -58,6 +94,7 @@ export default function Bills() {
           total: infoObject.total,
           paid: infoObject.paid,
           loan: infoObject.loan,
+          services: infoObject.list_service
         };
       });
 
@@ -77,45 +114,6 @@ export default function Bills() {
       setRows(newBills);
       setRows2(paidApartBills);
       setRows3(completedBills);
-
-    }).catch(() => {
-        setRows(initialRows)
-    })
-  }, []);
-
-  // modal methods
-
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
-
-  // feature
-  const resetDataOnDelete = () => {
-    billApi.getAllBills().then(response => {
-
-      const bills = response.map(item => {
-        // Parse chuỗi JSON từ trường 'info'
-        const infoObject = JSON.parse(item.info);
-      
-        return {
-          id: item.id,
-          id_apartment: item.id_apartment,
-          title: infoObject.title,
-          roomName: infoObject.note,
-          time_create: item.time_create,
-          total: infoObject.total
-        };
-      });
-
-
-
-      setRows(bills);
-      setRows2(bills);
-      setRows3(bills);
 
     }).catch(() => {
         setRows(initialRows)
@@ -164,13 +162,18 @@ export default function Bills() {
               Tạo phiếu thu
             </Button>
         </ThemeProvider>
-        <SelectRoomBillModal open={openModal} handleClose={handleCloseModal} />
+        <SelectRoomBillModal open={openModal} handleClose={handleCloseModal} onBillCreated={resetData}/>
       </Box>
       <hr />
-      <NewBillTable rows={rows} setRows={setRows} resetDataOnDelete={resetDataOnDelete}/>
+      <NewBillTable rows={rows} resetDataOnDelete={resetData} handlePayBill={handlePayBill}/>
         </TabPanel>
-        <TabPanel value="2">Thanh toán một phần</TabPanel>
-        <TabPanel value="3">Đã thanh toán</TabPanel>
+        <TabPanel value="2">
+          <PadBillTable rows={rows2} resetDataOnDelete={resetData} handlePayBill={handlePayBill}/>
+        </TabPanel>
+        <TabPanel value="3">
+          <p>Đã thanh toán hết</p>
+          <CompletedBillTable rows={rows3} resetDataOnDelete={resetData}/>
+        </TabPanel>
       </TabContext>
     </Box>
       

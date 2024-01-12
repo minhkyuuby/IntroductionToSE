@@ -14,6 +14,12 @@ const serviceApi = {
     deleteService: (serviceId) => {
         const url = `/service/${serviceId}`
         return axiosClient.delete(url)
+    },
+    updateService: (id, params) => {
+        const url=`/service/${id}`;
+        return axiosClient.put(url,
+            params
+        )
     }
 }
 

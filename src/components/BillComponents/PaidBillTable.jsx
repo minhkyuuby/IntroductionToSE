@@ -11,8 +11,9 @@ import BillDetailModal from './modals/BillDetailModal';
 const columns = [
   { id: 'title', label: 'Tiều đề' },
   { id: 'roomName', label: 'Tên phòng' },
-  { id: 'time_create', label: 'Tạo lúc' },
   { id: 'total', label: 'Tổng cộng tiền (nghìn đồng)' },
+  { id: 'paid', label: 'Đã thanh toán' },
+  { id: 'loan', label: 'Còn Nợ' },
   { id: 'actions', label: 'hoạt động' }, 
 ];
 
@@ -21,10 +22,10 @@ const cellStyle = {
   verticalAlign: 'middle',
 };
 
-export default function NewBillTable({ rows, resetDataOnDelete, handlePayBill }) {
+export default function PadBillTable({ rows, resetDataOnDelete, handlePayBill }) {
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [payModalOpen, setpayModalOpen] = useState(false);
-  const [totalPayment, setTotalPayment] = useState(0);
+  const [loanPayment, setloanPayment] = useState(0);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [page, setPage] = useState(0);
@@ -37,14 +38,16 @@ export default function NewBillTable({ rows, resetDataOnDelete, handlePayBill })
 
   const handlePayClick = (rowIndex) => {
     setSelectedRow(rowIndex);
-    setTotalPayment(rows[rowIndex].total)
+    const loan = rows[rowIndex].loan;
+    setloanPayment(loan)
     setpayModalOpen(true)
   }
 
   const hanlePayConfirm = (payAmount, loanNumber) => {
     const billIdToDelete = rows[selectedRow].id;
-    
-    handlePayBill(billIdToDelete, payAmount, loanNumber)
+    const prePaidAmount = Number(rows[selectedRow].paid);
+    const newPaid = prePaidAmount + Number(payAmount);
+    handlePayBill(billIdToDelete, newPaid, loanNumber)
   };
 
   const handleDeleteConfirm = () => {
@@ -72,6 +75,7 @@ export default function NewBillTable({ rows, resetDataOnDelete, handlePayBill })
 
   useEffect(() => {
     // Bất cứ thay đổi nào trong rows sẽ kích hoạt lại hàm này
+    console.log("Rows changed:", rows);
   }, [rows]);
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -159,7 +163,7 @@ export default function NewBillTable({ rows, resetDataOnDelete, handlePayBill })
       </Dialog>
       
 
-      <PayModal isOpen={payModalOpen} totalAmount={totalPayment} onClose={() => setpayModalOpen(false)} onSubmit={hanlePayConfirm}/>
+      <PayModal isOpen={payModalOpen} totalAmount={loanPayment} onClose={() => setpayModalOpen(false)} onSubmit={hanlePayConfirm}/>
       <BillDetailModal open={editModalOpen} billData={selectedRowData} onClose={() => setEditModalOpen(false)}/>
 
       <TablePagination

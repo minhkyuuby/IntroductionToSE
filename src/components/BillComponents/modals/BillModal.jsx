@@ -15,6 +15,7 @@ import ServiceCard from '../cards/ServiceCard';
 import serviceApi from "../../../api/serviceApi";
 
 import billApi from '../../../api/billApi';
+import vehicleApi from '../../../api/vehicleApi';
 
 
 const servicesData = [
@@ -23,13 +24,17 @@ const servicesData = [
   // Add more services as needed
 ];
 
-export default function BillModal({ open, onClose, roomData }) {
+export default function BillModal({ open, onClose, roomData, onBillCreated }) {
   const [services, setServices] = useState(servicesData)
 
   const [roomVehicles, setRoomVehicles] = useState([])
 
+  const [bikeNumber, setBikeNumber] = useState(0)
+  const [motoNumber, setMotoNumber] = useState(0)
+  const [carNumber, setCarNumber] = useState(0)
+
   const [billInfo, setBillInfo] = useState({
-    title: '',
+    title: 'Hóa đơn',
     createDate: new Date(),
     selectedServices: [],
     total: 0
@@ -40,23 +45,47 @@ export default function BillModal({ open, onClose, roomData }) {
   // use Effect ***************
   useEffect(() => {
     if(!open) return;
-    serviceApi.getAllServices().then((res) => {
-      const services = res.map((service) => {
-        const infoObject = JSON.parse(service.info);
-        let unit = infoObject.unit
-        let quantity = 0;
-        if (unit === "cubic-meter") {
-          quantity = roomData.area
-        }
-        return {
-          id: service.id,
-          name: service.name,
-          price: infoObject.price,
-          unit: unit,
-          quantity: quantity
-        }
+    let bikeNum =0, motoNum = 0, carNum = 0;
+    vehicleApi.getVehiclesByApartment(roomData.id).then(res => {
+      setRoomVehicles(res)
+      res.forEach(vec => {
+        const infoObject = JSON.parse(vec.info)
+
+        if(infoObject.note === 'bike') bikeNum++;
+        else if(infoObject.note === 'moto') motoNum++;
+        else if(infoObject.note === 'car') carNum++;
       })
-      setServices(services)
+
+      setBikeNumber(bikeNum)
+      setMotoNumber(motoNum)
+      setCarNumber(carNum)
+
+    }).finally(() => {
+      serviceApi.getAllServices().then((res) => {
+        const services = res.map((service) => {
+          const infoObject = JSON.parse(service.info);
+          let unit = infoObject.unit
+          let quantity = 0;
+          if (unit === "square-meter") {
+            quantity = roomData.area
+          } else if(unit === "bike") {
+            quantity = bikeNum
+          } else if(unit === 'moto') {
+            quantity = motoNum
+          }  else if(unit === 'car') {
+            quantity = carNum
+          }
+          return {
+            id: service.id,
+            name: service.name,
+            price: infoObject.price,
+            unit: unit,
+            quantity: quantity,
+            status: infoObject.status
+          }
+        })
+        setServices(services.filter(e => e.status === 0))
+      })
     })
 
 
@@ -133,6 +162,7 @@ export default function BillModal({ open, onClose, roomData }) {
     }
     
     billApi.createNewBill(billParams).then(() => {
+      onBillCreated()
       handleClose()
     }).finally(() => {
 
@@ -194,7 +224,12 @@ export default function BillModal({ open, onClose, roomData }) {
             />
           </DemoContainer>
         </LocalizationProvider>
-
+        <br/>
+        <Typography variant="subtitle1" gutterBottom>
+          các loại xe của phòng:
+          <p>Xe đạp: {bikeNumber}, xe máy: {motoNumber}, ô tô: {carNumber}</p>
+          
+        </Typography>
         <Typography variant="subtitle1" gutterBottom>
           danh sách dịch vụ tính tiền:
         </Typography>

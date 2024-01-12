@@ -30,7 +30,7 @@ const theme = createTheme({
   },
 });
 
-export default function SelectRoomBillModal({ open, handleClose }) {
+export default function SelectRoomBillModal({ open, handleClose, onBillCreated }) {
   const [apartments, setApartments] = useState([]);
   const [openBill, setOpenBill] = useState(false);
 
@@ -116,7 +116,7 @@ export default function SelectRoomBillModal({ open, handleClose }) {
       </Box>
       
     </Modal>
-    <BillModal open={openBill} onClose={handleCloseBillModal} roomData={room}></BillModal>
+    <BillModal open={openBill} onClose={handleCloseBillModal} onBillCreated={onBillCreated} roomData={room}></BillModal>
     </>
   );
 }

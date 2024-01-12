@@ -1,13 +1,25 @@
 
 import React from 'react';
 import { Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { useNavigate } from 'react-router';
 
 
-const sidebarItems = ['Dashboard', 'Apartment', 'Service', 'Resident', 'Bill', ];
+const sidebarItems = [
+  { name: 'Dashboard', lable: 'Tổng quát', path: "/dashboard" }, 
+  { name: 'Apartment', lable: 'Căn hộ', path: "/apartment" }, 
+  { name: 'Service', lable: 'Dịch vụ', path: "/service" }, 
+  { name: 'Resident', lable: 'Cư dân', path: "/resident" }, 
+  { name: 'Vehicle', lable: 'Phương tiện', path: "/vehicle" }, 
+  { name: 'Bill', lable: 'Hóa đơn', path: "/bill" },
+]
 
 const drawerWidth = 240;
 
-const Sidebar = ({ items = sidebarItems, highlightedItem = "Dashboard", onItemClick = ()=>{} }) => {
+const Sidebar = ({ highlightedItem = "Dashboard", onItemClick = ()=>{} }) => {
+  const navigate = useNavigate();
+  const handleOnClick = (item) => {
+    navigate(item.path)
+  }
   return (
     <Drawer variant="permanent" anchor="left" 
     sx={{
@@ -16,13 +28,13 @@ const Sidebar = ({ items = sidebarItems, highlightedItem = "Dashboard", onItemCl
         [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
       }}>
       <List>
-        {items.map((item) => (
+        {sidebarItems.map((item) => (
           <ListItem
-            key={item}
-            selected={highlightedItem === item}
-            onClick={() => onItemClick(item)}
+            key={item.name}
+            selected={highlightedItem === item.name}
+            onClick={() => handleOnClick(item)}
           >
-            <ListItemText primary={item} />
+            <ListItemText primary={item.lable} />
           </ListItem>
         ))}
       </List>

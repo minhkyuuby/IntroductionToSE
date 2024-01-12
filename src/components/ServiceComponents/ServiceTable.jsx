@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import serviceApi from '../../api/serviceApi.js';
+import EditNotificationsIcon from '@mui/icons-material/EditNotifications';
 
 const columns = [
   { id: 'name', label: 'Tên dịch vụ' },
@@ -9,7 +10,7 @@ const columns = [
   { id: 'description', label: 'Mô tả' },
   { id: 'price', label: 'Giá (nghìn đồng)' },
   { id: 'unit', label: 'Đơn vị' },
-  { id: 'actions', label: 'Thao tác' },
+  { id: 'actions', label: 'Hoạt động' },
 ];
 
 const cellStyle = {
@@ -17,7 +18,12 @@ const cellStyle = {
   verticalAlign: 'middle',
 };
 
-export default function ServiceTable({ rows, setRows }) {
+export default function ServiceTable({ rows, handleServiceActiveTogge }) {
+  useEffect(() => {
+    // Bất cứ thay đổi nào trong rows sẽ kích hoạt lại hàm này
+    console.log("Rows changed:", rows);
+  }, [rows]);
+  
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -53,7 +59,10 @@ export default function ServiceTable({ rows, setRows }) {
     setSelectedRow(null);
     setDeleteConfirmationOpen(false);
   };
-
+  
+  const handleActiveServiceToggle = (rowIndex) => {
+    handleServiceActiveTogge(rows[rowIndex].id)
+  };
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -70,9 +79,14 @@ export default function ServiceTable({ rows, setRows }) {
               {columns.map((column) => (
                 <TableCell key={column.id} style={cellStyle}>
                   {column.id === 'actions' ? (
-                    <IconButton aria-label="delete" size="small" onClick={() => handleDeleteClick(rowIndex)} style={{ color: '#f23a3a' }}>
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
+                   <>
+                      <IconButton aria-label="pay" size="small" onClick={()=> handleActiveServiceToggle(rowIndex)} >
+                       <EditNotificationsIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton aria-label="delete" size="small" onClick={() => handleDeleteClick(rowIndex)} style={{ color: '#f23a3a' }}>
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </>
                   ) : (
                     row[column.id]
                   )}

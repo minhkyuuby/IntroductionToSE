@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { Card, CardContent, Checkbox, FormControlLabel, TextField  } from '@mui/material';
+import { Card, CardContent, Checkbox, FormControlLabel, TextField, Typography  } from '@mui/material';
 
-const ServiceCard = ({ service, isSelected, onToggle, onQuantityChange  }) => {
+const ServiceCard = ({ service, isSelected, onToggle, onQuantityChange, isDetail  }) => {
 
   const [quantity, setQuantity] = useState(service.quantity);
 
@@ -10,6 +10,7 @@ const ServiceCard = ({ service, isSelected, onToggle, onQuantityChange  }) => {
   // }, [service])
 
   const handleQuantityChange = (e) => {
+    if(isDetail) return;
     let value = e.target.value;
 
     // Check if the input is a positive number
@@ -21,7 +22,8 @@ const ServiceCard = ({ service, isSelected, onToggle, onQuantityChange  }) => {
   return (
     <Card key={service.id} variant="outlined" sx={{ mb: 1 }}>
       <CardContent>
-        <FormControlLabel
+        {isDetail? <Typography>{service.name}</Typography>
+         : <FormControlLabel
           control={
             <Checkbox
               checked={isSelected}
@@ -29,7 +31,7 @@ const ServiceCard = ({ service, isSelected, onToggle, onQuantityChange  }) => {
             />
           }
           label={`${service.name}`}
-        />
+        />}
         <br/>
         + giá: {service.price} nghìn đồng/{service.unit}
         <TextField
