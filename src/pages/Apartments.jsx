@@ -5,6 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RoomTable from '../components/ApartmentsComponents/RoomTable';
 import AddRoomModal from '../components/ApartmentsComponents/AddRoomModal';
 import apartmentApi from '../api/apartmentApi.js';
+import Layout from './lyaout/Layout.jsx';
 
 const initialRows = [
   // Initial data for the table
@@ -86,40 +87,42 @@ export default function Apartments() {
   };
 
   return (
-    <Container component="main" sx={{ width: 1000 }}>
-      <Typography component="h1" variant="h6"
-        sx={{
-          backgroundColor: '#DCF2F1',
-          height: 40,
-          display: 'flex',
-          alignItems: 'center',
-          paddingLeft: 4,
-          boxShadow: 3,
-          marginTop: 5,
-          marginBottom: 2,
-        }}>
-        Danh sách phòng
-      </Typography>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 2,
-          marginRight: 10
-        }}>
-        <ThemeProvider theme={theme}>
-          <Button 
-            onClick={handleOpenModal} 
-            variant="contained" color="primary" 
-            startIcon={<AddIcon /> }>
-              Thêm phòng
-            </Button>
-        </ThemeProvider>
-        <AddRoomModal open={openModal} handleClose={handleCloseModal} handleAddRoom={handleAddRoom} />
-      </Box>
-      <hr />
-      <RoomTable rows={rows} setRows={setRows} />
-    </Container>
+    <Layout page = {"Apartment"}>
+      <Container component="main" sx={{ width: 1000 }}>
+        <Typography component="h1" variant="h6"
+          sx={{
+            backgroundColor: '#DCF2F1',
+            height: 40,
+            display: 'flex',
+            alignItems: 'center',
+            paddingLeft: 4,
+            boxShadow: 3,
+            marginTop: 5,
+            marginBottom: 2,
+          }}>
+          Danh sách phòng
+        </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 2,
+            marginRight: 10
+          }}>
+          <ThemeProvider theme={theme}>
+            <Button 
+              onClick={handleOpenModal} 
+              variant="contained" color="primary" 
+              startIcon={<AddIcon /> }>
+                Thêm phòng
+              </Button>
+          </ThemeProvider>
+          <AddRoomModal open={openModal} handleClose={handleCloseModal} handleAddRoom={handleAddRoom} />
+        </Box>
+        <hr />
+        <RoomTable rows={rows} setRows={setRows} />
+      </Container>
+    </Layout> 
   );
 }

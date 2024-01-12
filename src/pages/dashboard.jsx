@@ -39,7 +39,7 @@ export default function Dashboard() {
         <Paper elevation={3} style={{ padding: '20px', margin: '20px 0' }}>
           <Typography variant="h5">Apartment Management</Typography>
           <Typography>
-            Đây là trang dashboard quản lý dự án BlueMoon
+            Đây là trang dashboard quản lý Tòa nhà
           </Typography>
         </Paper>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>

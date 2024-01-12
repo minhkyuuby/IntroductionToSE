@@ -18,7 +18,7 @@ const cellStyle = {
   verticalAlign: 'middle',
 };
 
-export default function ServiceTable({ rows, handleServiceActiveTogge }) {
+export default function ServiceTable({ rows, setRows, handleServiceActiveTogge }) {
   useEffect(() => {
     // Bất cứ thay đổi nào trong rows sẽ kích hoạt lại hàm này
     console.log("Rows changed:", rows);

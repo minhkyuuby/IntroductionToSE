@@ -130,7 +130,7 @@ export default function Services() {
           <AddServiceModal open={openModal} handleClose={handleCloseModal} handleAddService={handleAddService} />
         </Box>
         <hr />
-        <ServiceTable rows={rows} handleServiceActiveTogge={handleServiceActiveToggle} />
+        <ServiceTable rows={rows} setRows={setRows} handleServiceActiveTogge={handleServiceActiveToggle} />
       </Container>
     </Layout>
   );

@@ -36,7 +36,6 @@ export default function Bills() {
   const [rows, setRows] = useState(initialRows);
   const [rows2, setRows2] = useState(initialRows);
   const [rows3, setRows3] = useState(initialRows);
-  const [rooms, setRooms] = useState([]);
   const [tab, setTab] = React.useState('1');
 
   const handleChangeTab = (event, newValue) => {
