@@ -17,6 +17,11 @@ const temporaryLeaveAPI = {
         return axiosClient.post(url,
             params
         )
+    },
+
+    deleteTemporaryLeaveCard: (cardId) => {
+        const url=`/temporary_card/${cardId}`
+        return axiosClient.delete(url)
     }
 }
 

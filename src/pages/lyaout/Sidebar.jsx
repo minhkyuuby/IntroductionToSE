@@ -11,6 +11,8 @@ const sidebarItems = [
   { name: 'Resident', lable: 'Cư dân', path: "/resident" }, 
   { name: 'Vehicle', lable: 'Phương tiện', path: "/vehicle" }, 
   { name: 'Bill', lable: 'Hóa đơn', path: "/bill" },
+  { name: 'TemporaryLeave', lable: 'Tạm vắng', path: "/temporaryLeaveTable"},
+  { name: 'TemporaryResident', label: 'Tạm trú', path: "/temporaryResidenceTable"}
 ]
 
 const drawerWidth = 240;

@@ -35,7 +35,9 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <Container>
+      <Container style={{
+        width: "70%", right: "0", margin: "0 0 0 20%"
+      }}>
         <Paper elevation={3} style={{ padding: '20px', margin: '20px 0' }}>
           <Typography variant="h5">Apartment Management</Typography>
           <Typography>
@@ -44,13 +46,13 @@ export default function Dashboard() {
         </Paper>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={6}>
-            <Item style={{backgroundColor: "blue", color: "white"}}>Số căn hộ: {numApartment}</Item>
+            <Item style={{backgroundColor: "rgb(127, 199, 217)", color: "white"}}>Số căn hộ: {numApartment}</Item>
           </Grid>
           <Grid item xs={6}>
-            <Item style={{backgroundColor: "blue", color: "white"}}>Số cư dân: {numResident}</Item>
+            <Item style={{backgroundColor: "rgb(127, 199, 217)", color: "white"}}>Số cư dân: {numResident}</Item>
           </Grid>
           <Grid item xs={6}>
-            <Item style={{backgroundColor: "blue", color: "white"}}>Số phương tiện: {numVehicle}</Item>
+            <Item style={{backgroundColor: "rgb(127, 199, 217)", color: "white"}}>Số phương tiện: {numVehicle}</Item>
           </Grid>
         </Grid>
         {/* Add more components and content for your dashboard here */}
