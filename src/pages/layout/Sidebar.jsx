@@ -29,12 +29,20 @@ const Sidebar = ({ highlightedItem = "Dashboard", onItemClick = ()=>{} }) => {
         flexShrink: 0,
         [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
       }}>
-      <List>
+      <List style={{
+        width: "90%"
+      }}>
         {sidebarItems.map((item) => (
           <ListItem
             key={item.name}
             selected={highlightedItem === item.name}
             onClick={() => handleOnClick(item)}
+            style={{
+              backgroundColor: "white",
+              margin: "0.3em 0.5em",
+              color: "black",
+              borderRadius: "2em"
+            }}
           >
             <ListItemText primary={item.lable} />
           </ListItem>

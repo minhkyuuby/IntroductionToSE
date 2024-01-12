@@ -63,16 +63,19 @@ export default function EditResidentModal({ open, handleClose, selectedRow, setR
         return residentApi.getAllResidents();
       })
       .then(response => {
+        // Map the response to format it for the table
         const updatedResidents = response.map(item => {
           const infoObject = JSON.parse(item.info);
           return {
             id: item.id,
             fullname: infoObject.fullname,
-            birthdayResident: infoObject.birthdayResident,
+            phone_number: infoObject.phone_number,
             identity: infoObject.identity,
+            birthdayResident: infoObject.birthdayResident, 
             residentId: infoObject.residentId,
           };
         });
+        // Update the state with the updated room data
         setRows(updatedResidents);
       })
       .catch(error => {

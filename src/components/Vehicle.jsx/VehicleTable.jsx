@@ -10,6 +10,11 @@ const columns = [
   { id: 'actions', label: 'xóa' },
 ];
 
+const cellStyle = {
+  textAlign: 'center',
+  verticalAlign: 'middle',
+};
+
 export default function VechicleTable({ vehicles = [], resetData }) {
   const [rows, setRows] = useState(vehicles);
   const [showDeleteAlart, setShowDeleteAlart] = useState(false)
@@ -53,7 +58,7 @@ export default function VechicleTable({ vehicles = [], resetData }) {
         <TableHead style={{ backgroundColor: '#7FC7D9', color: 'white' }}>
           <TableRow>
             {columns.map((column) => (
-              <TableCell key={column.id}>{column.label}</TableCell>
+              <TableCell key={column.id} style={cellStyle}>{column.label}</TableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -61,10 +66,10 @@ export default function VechicleTable({ vehicles = [], resetData }) {
           {rows.map((row) => (
             <TableRow key={row.name}>
               {columns.map((column) => (
-                <TableCell key={column.id} >
+                <TableCell key={column.id } style={cellStyle}>
                   {column.id === 'actions' ? (
                     <>
-                      <IconButton aria-label="pay" size="small" onClick={() => handleDelete(row.id)} >
+                      <IconButton aria-label="pay" size="small" onClick={() => handleDelete(row.id)} style={{ color: '#f23a3a' }}>
                         <DeleteIcon fontSize="small" />
                       </IconButton>
                     </>

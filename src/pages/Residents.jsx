@@ -40,7 +40,7 @@ export default function Residents() {
           fullname: infoObject.fullname,
           birthdayResident: infoObject.birthdayResident,
           phone_number: infoObject.phone_number,
-          identity: infoObject.cccd,
+          identity: infoObject.identity,
         };
       });
 
@@ -65,7 +65,7 @@ export default function Residents() {
       info: {
         fullname: newResident.fullname,
         phone_number: '', 
-        cccd: newResident.identity, 
+        identity: newResident.identity, 
         birthdayResident: newResident.birthdayResident,
         residentId: newResident.residentId
       },
@@ -85,7 +85,7 @@ export default function Residents() {
             id: item.id,
             fullname: infoObject.fullname,
             phone_number: infoObject.phone_number,
-            identity: infoObject.cccd,
+            identity: infoObject.identity,
             birthdayResident: infoObject.birthdayResident, 
             residentId: infoObject.residentId,
           };

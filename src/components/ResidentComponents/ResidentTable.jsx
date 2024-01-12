@@ -57,7 +57,7 @@ export default function ResidentTable({ rows, setRows }) {
             id: item.id,
             fullname: infoObject.fullname,
             phone_number: infoObject.phone_number,
-            identity: infoObject.cccd,
+            identity: infoObject.identity,
             birthdayResident: infoObject.birthdayResident, 
             residentId: infoObject.residentId,
           };
@@ -80,7 +80,9 @@ export default function ResidentTable({ rows, setRows }) {
     setDeleteConfirmationOpen(false);
   };
 
+  const [selectedRowData, setSelectedRowData] = useState(null);
   const handleEditClick = (rowIndex) => {
+    setSelectedRowData(rows[rowIndex])
     setSelectedRow(rowIndex);
     setEditModalOpen(true);
   };
@@ -189,9 +191,11 @@ export default function ResidentTable({ rows, setRows }) {
       />
       <EditResidentModal
         open={editModalOpen}
+        selectedRow={selectedRowData}
         handleClose={() => setEditModalOpen(false)}
-        selectedRow={selectedRow}
+        // selectedRow={selectedRow}
         handleUpdateRow={handleUpdateRow} // Truyền hàm handleUpdateRow ở đây
+        setRows={setRows}
       />
       <AddRoomForResidentModal
           open={addRoomModalOpen}
