@@ -10,6 +10,10 @@ const serviceApi = {
         return axiosClient.post(url,
             params
         )
+    },
+    deleteService: (serviceId) => {
+        const url = `/service/${serviceId}`
+        return axiosClient.delete(url)
     }
 }
 

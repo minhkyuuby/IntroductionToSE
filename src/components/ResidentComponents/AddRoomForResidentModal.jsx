@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Box, Typography, Button, Card, CardContent, Grid } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Modal, Box, Typography, Card, CardContent, Grid } from '@mui/material';
 import apartmentApi from '../../api/apartmentApi';
 import pair_apartment_peopleAPI from '../../api/pairApartmentResidentAPI';
 
@@ -16,19 +15,6 @@ const style = {
   p: 4,
   borderRadius: 2
 };
-
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#7FC7D9',
-      contrastText: '#ffffff',
-    },
-    secondary: {
-      main: '#f50057',
-    },
-  },
-});
 
 export default function AddRoomForResidentModal({ open, handleClose, residentId }) {
   const [apartments, setApartments] = useState([]);
@@ -125,17 +111,6 @@ export default function AddRoomForResidentModal({ open, handleClose, residentId 
           ))}
         </Grid>
         <br />
-        <ThemeProvider theme={theme}>
-          <Button sx={{
-            backgroundColor: '#E8E8E8',
-            color: '#2E2E2E',
-            '&:hover': {
-              backgroundColor: '#DCDCDC',
-            },
-          }} onClick={handleClose}>
-            Hủy
-          </Button>
-        </ThemeProvider>
       </Box>
       
     </Modal>

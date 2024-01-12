@@ -21,7 +21,13 @@ const apartmentApi = {
     editRoom: (roomId, updatedRoomData) => {
         const url = `/apartment/${roomId}`;
         return axiosClient.put(url, updatedRoomData);
-      }      
+    },
+    
+    getApartmentPeople: (apartmentId) => {
+        console.log(apartmentId)
+        const url = `/apartment/${apartmentId}/people`
+        return axiosClient.get(url);
+    }
 }
 
 export default apartmentApi;

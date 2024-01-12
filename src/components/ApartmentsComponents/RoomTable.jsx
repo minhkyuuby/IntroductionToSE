@@ -4,13 +4,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import TablePagination from '@mui/material/TablePagination';
 import EditRoomModal from './EditRoomModal';
+import PersonIcon from '@mui/icons-material/Person';
 import apartmentApi from '../../api/apartmentApi';
+import InformationModal from './InformationModal';
 
 const columns = [
   { id: 'name', label: 'Tên phòng' },
   { id: 'status', label: 'Trạng thái' },
   { id: 'area', label: 'Diện tích (m²)' },
-  { id: 'actions', label: 'Xóa' }, 
+  { id: 'information', label: 'Thông tin' },
+  { id: 'actions', label: 'Thao tác' }, 
 ];
 
 const cellStyle = {
@@ -23,6 +26,7 @@ export default function RoomTable({ rows, setRows }) {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [page, setPage] = useState(0);
+  const [informationModalOpen, setInformationModalOpen] = useState(false); 
   const rowsPerPage = 5; 
 
   const handleDeleteClick = (rowIndex) => {
@@ -75,6 +79,11 @@ export default function RoomTable({ rows, setRows }) {
     setEditModalOpen(true);
   };
 
+  const handleInforButtonClick = (rowIndex) => {
+    setSelectedRow(rowIndex);
+    setInformationModalOpen(true);
+  };
+
   useEffect(() => {
 
   }, [rows]);
@@ -105,6 +114,11 @@ export default function RoomTable({ rows, setRows }) {
                        <DeleteIcon fontSize="small" />
                       </IconButton>
                     </>
+                  ) : column.id === 'information' ? (
+                    <IconButton aria-label='infor' size='small' onClick={() => handleInforButtonClick(rowIndex)}>
+                      <PersonIcon fontSize='small' />
+                    </IconButton>
+                    
                   ) : (
                     row[column.id]
                   )}
@@ -171,6 +185,11 @@ export default function RoomTable({ rows, setRows }) {
         handleClose={() => setEditModalOpen(false)}
         selectedRow={selectedRowData}
         setRows={setRows}
+      />
+      <InformationModal
+        open={informationModalOpen} 
+        handleClose={() => setInformationModalOpen(false)} 
+        apartmentId = {rows[selectedRow]?.id}
       />
     </TableContainer>
     

@@ -4,6 +4,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -19,9 +20,9 @@ const style = {
 export default function AddTemporaryLeaveModal({ open, handleClose, handleAddTemporaryLeave }) {
   const [paperId, setPaperId] = useState('');
   const [residentId, setResidentId] = useState('');
-  const [residentName, setResidentName] = useState('');
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
+  const [fullname, setResidentName] = useState('');
+  const [start, setFromDate] = useState(null);
+  const [end, setToDate] = useState(null);
   const [reason, setReason] = useState('');
 
   const resetFields = () => {
@@ -31,14 +32,15 @@ export default function AddTemporaryLeaveModal({ open, handleClose, handleAddTem
     setFromDate(null);
     setToDate(null);
     setReason('');
+    handleClose();
   };
 
   const handleAddTemporaryLeaveModal = () => {
-    const formattedFromDate = fromDate ? fromDate.format('YYYY-MM-DD') : ''
-    const formattedToDate = fromDate ? fromDate.format('YYYY-MM-DD') : ''
-
-
-    const newTemporaryLeave = { paperId, residentId, residentName, fromDate:formattedFromDate, toDate:formattedToDate, reason };
+    const formattedFromDate = start ? start.format('YYYY-MM-DD') : ''
+    const formattedToDate = end ? end.format('YYYY-MM-DD') : ''
+    const type = 0
+    const newTemporaryLeave = { note: reason, paperId, residentId, fullname, start:formattedFromDate, end:formattedToDate, type };
+    
     handleAddTemporaryLeave(newTemporaryLeave);
     resetFields();
     handleClose();
@@ -59,12 +61,12 @@ export default function AddTemporaryLeaveModal({ open, handleClose, handleAddTem
         <Box>
           <TextField label="Mã giấy" value={paperId} onChange={(e) => setPaperId(e.target.value)} fullWidth margin="normal" />
           <TextField label="Mã cư dân" value={residentId} onChange={(e) => setResidentId(e.target.value)} fullWidth margin="normal" />
-          <TextField label="Tên cư dân" value={residentName} onChange={(e) => setResidentName(e.target.value)} fullWidth margin="normal" />
+          <TextField label="Tên cư dân" value={fullname} onChange={(e) => setResidentName(e.target.value)} fullWidth margin="normal" />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DatePicker']}>
               <DatePicker
                 label="Từ khi"
-                value={fromDate}
+                value={start}
                 onChange={(date) => setFromDate(date)}
                 fullWidth
                 margin="normal"
@@ -76,7 +78,7 @@ export default function AddTemporaryLeaveModal({ open, handleClose, handleAddTem
             <DemoContainer components={['DatePicker']}>
               <DatePicker
                 label="Đến khi"
-                value={toDate}
+                value={end}
                 onChange={(date) => setToDate(date)}
                 fullWidth
                 margin="normal"

@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper } from '@mui/material';
 
-export default function TemporaryLeaveTable({ data }) {
-  const columns = [
-    { id: 'paperId', label: 'Mã giấy' },
-    { id: 'residentId', label: 'Mã cư dân' },
-    { id: 'residentName', label: 'Tên cư dân' },
-    { id: 'fromDate', label: 'Từ khi' },
-    { id: 'toDate', label: 'Đến khi' },
-    { id: 'reason', label: 'Lý do' },
-  ];
+const columns = [
+  { id: 'paperId', label: 'Mã giấy' },
+  { id: 'residentId', label: 'Mã cư dân' },
+  { id: 'fullname', label: 'Tên cư dân' },
+  { id: 'start', label: 'Từ khi' },
+  { id: 'end', label: 'Đến khi' },
+  { id: 'reason', label: 'Lý do' },
+];
 
+export default function TemporaryLeaveTable({ rows }) {
+  useEffect(() => {
+    // Bất cứ thay đổi nào trong rows sẽ kích hoạt lại hàm này
+    console.log("Rows changed:", rows);
+  }, [rows]);
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -22,7 +26,7 @@ export default function TemporaryLeaveTable({ data }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
+          {rows.map((row) => (
             <TableRow key={row.id}>
               {columns.map((column) => (
                 <TableCell key={column.id}>{row[column.id]}</TableCell>
