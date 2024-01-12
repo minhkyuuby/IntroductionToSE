@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Typography, Button, Box } from '@mui/material'; // Thêm Box vào danh sách import
 import AddTemporaryLeaveModal from '../components/TemporaryLeaveComponents/AddTemporaryLeaveModal';
 import TemporaryLeaveTable from '../components/TemporaryLeaveComponents/TemporaryLeaveTable';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
+import temporaryLeaveAPI from '../api/temporaryLeaveAPI';
 
+const initialRows = [
+  // Initial data for the table
+];
 
-// const initialRows = [
-//   // Initial data for the table
-// ];
 const theme = createTheme({
   palette: {
     mode: 'light',
@@ -24,7 +25,33 @@ const theme = createTheme({
 
 export default function TemporaryLeave() {
   const [openModal, setOpenModal] = useState(false);
-  const [temporaryLeaveData, setTemporaryLeaveData] = useState([]);
+  const [rows, setRows] = useState(initialRows);
+
+  useEffect(() => {
+    temporaryLeaveAPI.getAllTemporaryLeave().then(response => {
+
+      const leaveCards = response.map(item => {
+        // Parse chuỗi JSON từ trường 'info'
+        const infoObject = JSON.parse(item.info);
+      
+        return {
+          id: item.id,
+          id_people: item.id_people,
+          paperId: infoObject.paperId,
+          residentId: infoObject.residentId,
+          fullname: infoObject.fullname,
+          start: item.start,
+          end: item.end,
+          reason: infoObject.note
+        };
+      });
+
+      setRows(leaveCards);
+
+    }).catch(() => {
+        setRows(initialRows)
+    })
+  }, []);
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -35,8 +62,47 @@ export default function TemporaryLeave() {
   };
 
   const handleAddTemporaryLeave = (newTemporaryLeave) => {
-    setTemporaryLeaveData([...temporaryLeaveData, newTemporaryLeave]);
+    const requestBody ={
+      start: newTemporaryLeave.start,
+      end: newTemporaryLeave.end,
+      type: newTemporaryLeave.type,
+      info: {
+        note: newTemporaryLeave.note,
+        residentId: newTemporaryLeave.residentId,
+        fullname: newTemporaryLeave.fullname,
+        paperId: newTemporaryLeave.paperId
+      }
+    }
+    temporaryLeaveAPI.createNewTemporaryLeaveCard(requestBody).then(()=> {
+      
+      //re fresh lại bảng 
+      temporaryLeaveAPI.getAllTemporaryLeave().then(response => {
+
+        const leaveCards = response.map(item => {
+          // Parse chuỗi JSON từ trường 'info'
+          const infoObject = JSON.parse(item.info);
+        
+          return {
+            id: item.id,
+            id_people: item.id_people,
+            paperId: infoObject.paperId,
+            residentId: infoObject.residentId,
+            fullname: infoObject.fullname,
+            start: item.start,
+            end: item.end,
+            reason: infoObject.note
+          };
+        });
+  
+        setRows(leaveCards);
+      })
+
+    }).catch((e) => {
+      console.log("Thông báo cái gì đó ở đây là không tạo được service!");
+      console.log(e)
+    })
   };
+
   return (
     <Container component="main" sx={{ width: 1000 }}>
       <Typography component="h1" variant="h6"
@@ -69,7 +135,7 @@ export default function TemporaryLeave() {
 
       </Box>
       <hr />
-      <TemporaryLeaveTable data={temporaryLeaveData} />
+      <TemporaryLeaveTable rows={rows} />
     </Container >
   );
 }

@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import serviceApi from '../api/serviceApi.js';
 import Layout from './lyaout/Layout.jsx';
+
 const initialRows = [
   // Initial data for the table
 ];
