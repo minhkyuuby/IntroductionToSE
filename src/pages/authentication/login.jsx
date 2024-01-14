@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
-export default function SignIn() {
+export default function SignIn({setLoggedIn}) {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -18,8 +18,9 @@ export default function SignIn() {
     const username = formData.get('username');
     const password = formData.get('password');
   
-    if (username && password) {
+    if (username === "admin" && password === "admin") {
       // If authentication is successful, navigate to another page
+      setLoggedIn();
       navigate('/dashboard');
     } else {
       setError('Invalid username or password');

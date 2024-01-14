@@ -1,13 +1,13 @@
 import axiosClient from "./axios-client";
 
 const authApi = {
-    getActiveContestList: () => {
-        const url="/api/v1/project/contests";
-        return axiosClient.get(url, 
-            {
-                active: 1
-            })
+    login: (params) => {
+        const url="/bill";
+        return axiosClient.post(url,
+            params
+        )
     },
+
 }
 
 export default authApi;

@@ -170,7 +170,6 @@ export default function Bills() {
           <PadBillTable rows={rows2} resetDataOnDelete={resetData} handlePayBill={handlePayBill}/>
         </TabPanel>
         <TabPanel value="3">
-          <p>Đã thanh toán hết</p>
           <CompletedBillTable rows={rows3} resetDataOnDelete={resetData}/>
         </TabPanel>
       </TabContext>

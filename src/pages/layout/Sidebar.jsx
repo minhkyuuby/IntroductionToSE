@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Drawer, List, ListItem, ListItemText } from '@mui/material';
 import { useNavigate } from 'react-router';
@@ -37,12 +36,12 @@ const Sidebar = ({ highlightedItem = "Dashboard", onItemClick = ()=>{} }) => {
             key={item.name}
             selected={highlightedItem === item.name}
             onClick={() => handleOnClick(item)}
-            style={{
-              backgroundColor: "white",
-              margin: "0.3em 0.5em",
-              color: "black",
-              borderRadius: "2em"
-            }}
+            // style={{
+            //   backgroundColor: "white",
+            //   margin: "0.3em 0.5em",
+            //   color: "black",
+            //   borderRadius: "2em"
+            // }}
           >
             <ListItemText primary={item.lable} />
           </ListItem>

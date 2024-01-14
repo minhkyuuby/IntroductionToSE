@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@mui/material';
+import TextField from '@mui/material/TextField';
+
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import TablePagination from '@mui/material/TablePagination';
@@ -7,6 +9,20 @@ import EditRoomModal from './EditRoomModal';
 import PersonIcon from '@mui/icons-material/Person';
 import apartmentApi from '../../api/apartmentApi';
 import InformationModal from './InformationModal';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#7FC7D9',
+      contrastText: '#ffffff',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+  },
+});
 
 const columns = [
   { id: 'name', label: 'Tên phòng' },
@@ -21,7 +37,10 @@ const cellStyle = {
   verticalAlign: 'middle',
 };
 
-export default function RoomTable({ rows, setRows }) {
+export default function RoomTable({ rows = [], setRows }) {
+  const [filterdData, setFilteredData] = useState(rows);
+  const [filterValue, setFilterValue] = useState("")
+
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -35,7 +54,7 @@ export default function RoomTable({ rows, setRows }) {
   };
 
   const handleDeleteConfirm = () => {
-    const roomIdToDelete = rows[selectedRow].id; 
+    const roomIdToDelete = filterdData[selectedRow].id; 
   
     // Call the API to delete the room with the obtained ID
     apartmentApi.deleteRoom(roomIdToDelete)
@@ -75,7 +94,7 @@ export default function RoomTable({ rows, setRows }) {
   const [selectedRowData, setSelectedRowData] = useState(null);
 
   const handleEditClick = (rowIndex) => {
-    setSelectedRowData(rows[rowIndex]);
+    setSelectedRowData(filterdData[rowIndex]);
     setEditModalOpen(true);
   };
 
@@ -85,113 +104,136 @@ export default function RoomTable({ rows, setRows }) {
   };
 
   useEffect(() => {
-
+    setFilterValue("")
+    setFilteredData(rows)
   }, [rows]);
+
+  const FilterData = () => {
+    const filteredData = rows.filter(e => e.name.includes(filterValue));
+    setFilteredData(filteredData)
+  }
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650, size: 'small'}} aria-label="simple table">
-        <TableHead style={{ backgroundColor: '#7FC7D9', color: 'white' }}>
-          <TableRow>
-            {columns.map((column) => (
-              <TableCell key={column.id} style={cellStyle}>{column.label}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, rowIndex) => (
-            <TableRow key={rowIndex}>
-              {columns.map((column) => (
-                <TableCell key={column.id} style={cellStyle}>
-                  {column.id === 'actions' ? (
-                    <>
-                      <IconButton aria-label="edit" size="small" onClick={() => handleEditClick(rowIndex)}>
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton aria-label="delete" size="small" onClick={() => handleDeleteClick(rowIndex)} style={{ color: '#f23a3a' }}>
-                       <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </>
-                  ) : column.id === 'information' ? (
-                    <IconButton aria-label='infor' size='small' onClick={() => handleInforButtonClick(rowIndex)}>
-                      <PersonIcon fontSize='small' />
-                    </IconButton>
-                    
-                  ) : (
-                    row[column.id]
-                  )}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 62.67 * emptyRows }}>
-              <TableCell colSpan={4} />
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <Dialog
-        open={deleteConfirmationOpen}
-        onClose={handleDeleteCancel}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Xác nhận"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Bạn có chắc chắn muốn xóa phòng này không?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button 
-            onClick={handleDeleteCancel} 
-            sx={{
-              backgroundColor: '#E8E8E8', 
-              color: '#2E2E2E',
-              '&:hover': {
-                backgroundColor: '#DCDCDC', 
-              },
-            }}>
-            Hủy
+    <>
+    <TextField
+      label="Tên phòng"
+      variant="outlined"
+      value={filterValue}
+      onChange={(e)=> setFilterValue(e.target.value)}
+      margin="normal"
+    />
+    <br/>
+    <ThemeProvider theme={theme}>
+          <Button  variant="contained" onClick={FilterData}>
+            Lọc
           </Button>
-          <Button 
-            onClick={handleDeleteConfirm} 
-            sx={{ 
-              backgroundColor: '#f23a3a', 
-              color: '#FFFFFF', 
-              border: 1,
-              '&:hover': {
-                  backgroundColor: '#E00000', 
-                },
-              }} 
-            autoFocus>
-            Xác nhận 
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <TablePagination
-        rowsPerPageOptions={[rowsPerPage]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={(event, newPage) => setPage(newPage)}
-      />
-      <EditRoomModal
-        open={editModalOpen}
-        handleClose={() => setEditModalOpen(false)}
-        selectedRow={selectedRowData}
-        setRows={setRows}
-      />
-      <InformationModal
-        open={informationModalOpen} 
-        handleClose={() => setInformationModalOpen(false)} 
-        apartmentId = {rows[selectedRow]?.id}
-      />
-    </TableContainer>
+    </ThemeProvider>
+    
+    <TableContainer component={Paper} style={{marginTop: 10}}>
+       
+       <Table sx={{ minWidth: 650, size: 'small'}} aria-label="simple table">
+         <TableHead style={{ backgroundColor: '#7FC7D9', color: 'white' }}>
+           <TableRow>
+             {columns.map((column) => (
+               <TableCell key={column.id} style={cellStyle}>{column.label}</TableCell>
+             ))}
+           </TableRow>
+         </TableHead>
+         <TableBody>
+           {filterdData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, rowIndex) => (
+             <TableRow key={rowIndex}>
+               {columns.map((column) => (
+                 <TableCell key={column.id} style={cellStyle}>
+                   {column.id === 'actions' ? (
+                     <>
+                       <IconButton aria-label="edit" size="small" onClick={() => handleEditClick(rowIndex)}>
+                         <EditIcon fontSize="small" />
+                       </IconButton>
+                       <IconButton aria-label="delete" size="small" onClick={() => handleDeleteClick(rowIndex)} style={{ color: '#f23a3a' }}>
+                        <DeleteIcon fontSize="small" />
+                       </IconButton>
+                     </>
+                   ) : column.id === 'information' ? (
+                     <IconButton aria-label='infor' size='small' onClick={() => handleInforButtonClick(rowIndex)}>
+                       <PersonIcon fontSize='small' />
+                     </IconButton>
+                     
+                   ) : (
+                     row[column.id]
+                   )}
+                 </TableCell>
+               ))}
+             </TableRow>
+           ))}
+           {emptyRows > 0 && (
+             <TableRow style={{ height: 62.67 * emptyRows }}>
+               <TableCell colSpan={4} />
+             </TableRow>
+           )}
+         </TableBody>
+       </Table>
+       <Dialog
+         open={deleteConfirmationOpen}
+         onClose={handleDeleteCancel}
+         aria-labelledby="alert-dialog-title"
+         aria-describedby="alert-dialog-description"
+       >
+         <DialogTitle id="alert-dialog-title">{"Xác nhận"}</DialogTitle>
+         <DialogContent>
+           <DialogContentText id="alert-dialog-description">
+             Bạn có chắc chắn muốn xóa phòng này không?
+           </DialogContentText>
+         </DialogContent>
+         <DialogActions>
+           <Button 
+             onClick={handleDeleteCancel} 
+             sx={{
+               backgroundColor: '#E8E8E8', 
+               color: '#2E2E2E',
+               '&:hover': {
+                 backgroundColor: '#DCDCDC', 
+               },
+             }}>
+             Hủy
+           </Button>
+           <Button 
+             onClick={handleDeleteConfirm} 
+             sx={{ 
+               backgroundColor: '#f23a3a', 
+               color: '#FFFFFF', 
+               border: 1,
+               '&:hover': {
+                   backgroundColor: '#E00000', 
+                 },
+               }} 
+             autoFocus>
+             Xác nhận 
+           </Button>
+         </DialogActions>
+       </Dialog>
+       <TablePagination
+         rowsPerPageOptions={[rowsPerPage]}
+         component="div"
+         count={filterdData.length}
+         rowsPerPage={rowsPerPage}
+         page={page}
+         onPageChange={(event, newPage) => setPage(newPage)}
+       />
+       <EditRoomModal
+         open={editModalOpen}
+         handleClose={() => setEditModalOpen(false)}
+         selectedRow={selectedRowData}
+         setRows={setRows}
+       />
+       <InformationModal
+         open={informationModalOpen} 
+         handleClose={() => setInformationModalOpen(false)} 
+         apartmentId = {filterdData[selectedRow]?.id}
+       />
+     </TableContainer>
+    </>
     
   );
 }
