@@ -12,12 +12,13 @@ export default function SignIn({setLoggedIn}) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const username = formData.get('username');
     const password = formData.get('password');
-  
+    
     if (username === "admin" && password === "admin") {
       // If authentication is successful, navigate to another page
       setLoggedIn();
